@@ -37,7 +37,7 @@
                     </ul>
                 </nav>
                 <a href="#" class="logo">
-                    <img src="img/logo.svg" alt="" class="logo__img">
+                    <img src="{{ url_for('static',path='img/logo.svg') }}" alt="" class="logo__img">
                 </a>
                 <div class="header__box">
                     <p class="header__adress">
@@ -45,14 +45,14 @@
                     </p>
                     <ul class="user-list">
                         <li class="user-list__item">
-                            <a href="#" class="user-list__link"><img src="img/heart-icon.svg" alt=""></a>
+                            <a href="#" class="user-list__link"><img src="{{ url_for('static',path='img/heart-icon.svg') }}" alt=""></a>
                         </li>
                         <li class="user-list__item">
-                            <a href="#" class="user-list__link"><img src="img/profile.svg" alt=""></a>
+                            <a href="#" class="user-list__link"><img src="{{ url_for('static',path='img/profile.svg') }}" alt=""></a>
                         </li>
                         <li class="user-list__item">
                             <a href="#" class="user-list__link cart">
-                                <img src="img/cart.svg" alt="">
+                                <img src="{{ url_for('static',path='img/cart.svg') }}" alt="">
                                 <p class="cart__num">1</p>
                             </a>
                         </li>

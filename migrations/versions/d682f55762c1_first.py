@@ -1,8 +1,8 @@
 """First
 
-Revision ID: 709937aaf6fe
+Revision ID: d682f55762c1
 Revises: 
-Create Date: 2023-05-09 10:15:09.308949
+Create Date: 2023-05-13 08:38:49.186531
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlalchemy_utils
 
 
 # revision identifiers, used by Alembic.
-revision = '709937aaf6fe'
+revision = 'd682f55762c1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,13 +22,12 @@ def upgrade() -> None:
     op.create_table('Category',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('slug', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('Accessories',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('image', sqlalchemy_utils.types.url.URLType(), nullable=True),
+    sa.Column('image', sa.String(), nullable=True),
     sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('manufacturer', sa.String(length=100), nullable=True),
     sa.Column('amount_in_stock', sa.Integer(), nullable=True),
@@ -40,7 +39,7 @@ def upgrade() -> None:
     op.create_table('Vehicles',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('image', sqlalchemy_utils.types.url.URLType(), nullable=True),
+    sa.Column('image', sa.String(), nullable=True),
     sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('manufacturer', sa.String(length=100), nullable=True),
     sa.Column('seats', sa.Integer(), nullable=True),

@@ -1,5 +1,4 @@
 from sqlalchemy import Column,Integer,String,Boolean,ForeignKey
-from sqlalchemy_utils import URLType
 from database import Base
 
 
@@ -9,7 +8,6 @@ class Category(Base):
 
     id = Column(Integer,primary_key=True)
     name = Column(String,nullable=False)
-    slug = Column(String,nullable=False)
 
 
 class Vehicles(Base):
@@ -17,7 +15,7 @@ class Vehicles(Base):
 
     id = Column(Integer,primary_key=True)
     title = Column(String,nullable=False)
-    image = Column(URLType)
+    image = Column(String)
     price = Column(Integer,default=100000)
     manufacturer = Column(String(100))
     seats = Column(Integer)
@@ -29,14 +27,16 @@ class Vehicles(Base):
     category = Column(ForeignKey('Category.id'))
 
 
+
 class Accessories(Base):
     __tablename__ = 'Accessories'
 
     id = Column(Integer,primary_key=True)
     title = Column(String,nullable=False)
-    image = Column(URLType)
+    image = Column(String)
     price = Column(Integer,default=100000)
     manufacturer = Column(String(100))
     amount_in_stock = Column(Integer)
     sale = Column(Boolean,default=False)
     category = Column(ForeignKey('Category.id'))
+
