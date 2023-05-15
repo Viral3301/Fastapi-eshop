@@ -1,2 +1,2 @@
 from database import Base
-from .models import Accessories,Vehicles
+from .models import Accessories,Vehicles,Category

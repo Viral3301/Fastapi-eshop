@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <section class="catalog">
+        <div class="container">
+            <h2 class="catalog__title">Гидроциклы</h2>
+            <div class="catalog__filter">
+                <div class="catalog__filter-items">
+                    <button>Полноприводные</button>
+                    <button>от 5000</button>
+                    <button>BRP</button>
+                    <button>еще</button>
+                </div>
+                <div class="catalog__filter-btn">
+                    <select class="filter-style" name="" id="">
+                        <option value=""></option>
+                        <option value=""></option>
+                        <option value=""></option>
+                    </select>
+                    <button class="catalog__filter-btngrid">
+                        <svg width="23" height="21" viewBox="0 0 23 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="1" y="1" width="21" height="19" stroke="#2F3035" stroke-width="2"/>
+                            <rect x="7" y="6" width="2" height="2" fill="#2F3035" stroke="#2F3035" stroke-width="2"/>
+                            <rect x="7" y="13" width="2" height="2" fill="#2F3035" stroke="#2F3035" stroke-width="2"/>
+                            <rect x="14" y="6" width="2" height="2" fill="#2F3035" stroke="#2F3035" stroke-width="2"/>
+                            <rect x="14" y="13" width="2" height="2" fill="#2F3035" stroke="#2F3035" stroke-width="2"/>
+                            </svg>                            
+                    </button>
+                    <button class="catalog__filter-btnline">
+                        <svg width="25" height="19" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g opacity="1">
+                            <rect x="6" width="19" height="3" rx="1.5" fill="#2F3035"/>
+                            <rect x="6" y="8" width="19" height="3" rx="1.5" fill="#2F3035"/>
+                            <rect x="6" y="16" width="19" height="3" rx="1.5" fill="#2F3035"/>
+                            <rect width="3" height="3" rx="1.5" fill="#2F3035"/>
+                            <rect y="8" width="3" height="3" rx="1.5" fill="#2F3035"/>
+                            <rect y="16" width="3" height="3" rx="1.5" fill="#2F3035"/>
+                            </g>
+                            </svg>                            
+                    </button>
+                </div>
+            </div>
+            <div class="catalog__inner">
+                <aside class="catalog__inner-aside aside-filter">
+                    <div class="tabs-wrapper">
+                        <div class="tabs aside-filter__tabs">
+                            <a href="" class="tab aside-filter__tab tab--active" ><span> Параметры</span></a>
+                            <a href="" class="tab aside-filter__tab" ><span>По марке</span></a>
+                        </div>
+                        <div class="tabs-container">
+                            <div class="tabs-content aside-filter__tabs-content tabs-content--active"></div>
+
+                            <form class="aside-filter__form" action="">
+                                <li class="aside-filter__item-drop">
+                                    <p class="aside-filter__item-title filter__item-drop filter__item-drop--active">Наличие</p>
+                                    <div class="aside-filter__content">
+                                        <div class="aside-filter__content-box">
+                                            <label class="aside-filter__content-label">
+                                                <input class="filter-style" type="checkbox">
+                                                В наличии
+                                            </label>
+                                        </div>
+                                        <div class="aside-filter__content-box">
+                                            <label class="aside-filter__content-label">
+                                                <input class="filter-style" type="checkbox">
+                                                Под заказ
+                                            </label>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="aside-filter__item-drop">
+                                    <p class="aside-filter__item-title filter__item-drop filter__item-drop--active">Новинки</p>
+                                    <div class="aside-filter__content">
+                                        <div class="aside-filter__content-box">
+                                            <label class="aside-filter__content-label">
+                                                <input class="filter-style" name="radio" type="checkbox">
+                                                Все
+                                            </label>
+                                        </div>
+                                        <div class="aside-filter__content-box">
+                                            <label class="aside-filter__content-label">
+                                                <input class="filter-style" name="radio" type="checkbox">
+                                                Новинки
+                                            </label>
+                                        </div>
+                                        <div class="aside-filter__content-box">
+                                            <label class="aside-filter__content-label">
+                                                <input class="filter-style" name="radio" type="checkbox">
+                                                Акции
+                                            </label>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="aside-filter__item-drop"></li>
+                                <li class="aside-filter__item-list"></li>
+                            </form>
+
+                            <div class="tabs-content aside-filter__tabs-content">content-2</div>
+                        </div>
+                    </div>
+                </aside>
+                <div class="catalog__inner-list">
+                    {% for item in data %}
+                        <div class="product-item__wrapper ">
+                            <button class="product-item__favorite"></button>
+                            <button class="product-item__cart">
+                                <img src="img/cart-white.svg" alt="">
+                            </button>
+                            <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
+                            <a class="product-item product-item--sale" href="#">
+                                <p class="product-item__hover-text">Посмотреть товар</p>
+                                <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                <h4 class="products-item__title">{{ item.title }}</h4>
+                                <p class="price product-item__price">{{ item.price }}</p>
+                                <p class="product-item__notify">Нет в наличии</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                    <div class="pagination">
+                        <ul class="pagination-list">
+                            {% for pagination in range(1,pages_total) %}
+                                <li class="pagination-list__item active"><a href="/category/{{category_id}}/{{pagination}}">{{pagination}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+{% endblock content %}
+
