@@ -108,7 +108,7 @@
                                 <img src="img/cart-white.svg" alt="">
                             </button>
                             <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
-                            <a class="product-item product-item--sale" href="#">
+                            <a class="product-item product-item--sale" href="/product/{{item.id}}">
                                 <p class="product-item__hover-text">Посмотреть товар</p>
                                 <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
                                 <h4 class="products-item__title">{{ item.title }}</h4>

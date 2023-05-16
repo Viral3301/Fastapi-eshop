@@ -66,3 +66,8 @@ async def home(request: Request, category_id: int,page_num: int = 1,db: SessionL
     start = (page_num - 1) * 12
     end = start + 12
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page_num},)
+
+@app.get("/product/{product_id}")
+async def home(request: Request,product_id: int,db: SessionLocal = Depends(get_db)):
+    product = db.query(models.Vehicles).filter(models.Vehicles.id == product_id)
+    return templates.TemplateResponse('product-page.html',{'request':request,'product':product})

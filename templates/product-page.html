@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+
+   {% block content %}
+    
+    <section class="product-card">
+        <div class="container">
+            {% for item in product %}
+            <div class="product-card__inner">
+                <div class="product-card__img-box product-item--sale">
+                    <img src="{{ url_for('content_img',path='/'+ item.image) }}" alt="" class="product-card__img">
+                    <p class="product-card__price-new">{{ item.price }}₽</p>
+                    <a href="" class="product-card__link">Нашли дешевле? Снизим цену!</a>
+                </div>
+                <div class="product-card__content">
+                    <h1 class="product-card__title">{{ item.title }}</h1>
+                    <p class="product-card__code">
+                        Код товара: 5643224
+                    </p>
+                    <div class="product-card__buttons">
+                        <a class="product-card__icon-favorite"><img src="{{ url_for('static',path='img/heart-icon.svg') }}" alt=""></a>
+                        <a class="product-card__icon-comparsion"><img src="{{ url_for('static',path='img/comparsion.svg') }}" alt=""></a>
+                        <a class="rate">
+                            <div class="rate-yo" data-rateyo-rating="4"></div>
+                        </a>
+                    </div>
+                    <div class="tabs-wrapper product-card__tabs">
+                        <div class="tabs">
+                            <a href="" class="tab product-card__tab tab--active">Характеристики</a>
+                            <a href="" class="tab product-card__tab">Наличие в магазине</a>
+                        </div>
+                        <div class="tabs-container">
+                            <div class="tabs-content product-card__tab-content tabs-content--active">
+                                <ul class="product-card__list">
+                                    <li class="product-card__item">
+                                        <div class="product-card__item-left">Производитель</div>
+                                        <div class="product-card__item-right">{{ item.manufacturer}}</div>
+                                    </li>
+                                    <li class="product-card__item">
+                                        <div class="product-card__item-left">Количество мест</div>
+                                        <div class="product-card__item-right">{{item.seats}}</div>
+                                    </li>
+                                    <li class="product-card__item">
+                                        <div class="product-card__item-left">Мощность л.с</div>
+                                        <div class="product-card__item-right">{{item.engine}}</div>
+                                    </li>
+                                    <li class="product-card__item">
+                                        <div class="product-card__item-left">Двигатель</div>
+                                        <div class="product-card__item-right">{{item.engine_type}}</div>
+                                    </li>
+                                    <li class="product-card__item">
+                                        <div class="product-card__item-left">Год выпуска</div>
+                                        <div class="product-card__item-right">{{item.year}}</div>
+                                    </li>
+                                </ul>
+                                <a href="" class="product-card__more">Показать еще</a>
+                                <div class="product-card__btn">
+                                    <button>Купить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endblock content %}

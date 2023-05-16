@@ -32,4 +32,10 @@ $(function(){
         $(this).next().slideToggle(200)
     });
 
+    $(".rate-yo").rateYo({
+        ratedFill: "#1C62CD",
+        spacing: "7x",
+        normalFill: "#c4c4c4"
+    });
+
 });
