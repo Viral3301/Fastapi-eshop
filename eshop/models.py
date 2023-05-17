@@ -15,6 +15,7 @@ class Vehicles(Base):
 
     id = Column(Integer,primary_key=True)
     title = Column(String,nullable=False)
+    product_code = Column(Integer,default=11111)
     image = Column(String)
     price = Column(Integer,default=100000)
     manufacturer = Column(String(100))
@@ -25,6 +26,7 @@ class Vehicles(Base):
     amount_in_stock = Column(Integer)
     sale = Column(Boolean,default=False)
     category = Column(ForeignKey('Category.id'))
+    rating = Column(Integer,default=5)
 
 
 
@@ -33,10 +35,13 @@ class Accessories(Base):
 
     id = Column(Integer,primary_key=True)
     title = Column(String,nullable=False)
+    product_code = Column(Integer,default=111111)
     image = Column(String)
     price = Column(Integer,default=100000)
     manufacturer = Column(String(100))
     amount_in_stock = Column(Integer)
     sale = Column(Boolean,default=False)
     category = Column(ForeignKey('Category.id'))
+    rating = Column(Integer,default=5)
+
 
