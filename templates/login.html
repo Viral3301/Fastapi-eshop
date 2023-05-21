@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',path='css/login.css') }}">
+    <title>Log in</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="login__top">
+            <img src="{{ url_for('static',path='img/logo.svg') }}" alt="" class="image">
+            <h2 class="title">Авторизация</h2>
+        </div>
+        <section class="task">
+            <form action="" method="POST" class="form">
+                <input class="form-login" type="text" name="task_title" placeholder="Логин"><br>
+                <input class="form-password" type="password" name="task_body" placeholder="Пароль"><br>
+                <input class="save-btn" type="submit" value="Log in">
+            </form>
+        </section>
+    </div>
+</body>
+</html>

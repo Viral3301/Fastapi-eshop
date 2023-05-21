@@ -5,10 +5,12 @@ name = "pypi"
 
 [packages]
 fastapi = {extras = ["all"], version = "*"}
-sqlalchemy = "*"
 psycopg2 = "*"
 alembic = "*"
 sqlalchemy-utils = "*"
+asyncpg = "*"
+fastapi-users = {extras = ["sqlalchemy"], version = "*"}
+sqlalchemy = {extras = ["asyncio"], version = "*"}
 
 [dev-packages]
 

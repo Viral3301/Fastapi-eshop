@@ -1,0 +1,60 @@
+html{
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*,
+*::before,
+*::after{
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    align-items: center;
+    display: flex;
+    font-size: 24px;
+    justify-content: center;
+    height: inherit;
+}
+
+.wrapper{
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 450px;
+    color: #232323;
+    height: 540px;
+    background: rgba(200, 255, 255, 0.2);
+}
+
+.login__top{
+    text-align: center;
+    padding-top: 45px;
+    padding-bottom: 5px;
+    border-radius: 9px; 
+}
+
+.task{
+    display: flex;
+    justify-content: center;
+    margin: 5% 0;
+}
+
+.form input{
+    border: none;
+    font-size: 20px;
+    line-height: 55px;
+    width: 350px;
+    outline: none;
+    border-bottom: 1px solid #656464;
+}
+
+.save-btn{
+    margin-top: 40px;
+    background-color: #1C62CD;
+}
+
+.form-password{
+    margin-top: 10px;
+}
