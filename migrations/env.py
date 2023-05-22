@@ -5,8 +5,10 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from database import SQLALCHEMY_DATABASE_URL
+
 from eshop.base import Base
+
+DATABASE_URL = "postgresql://postgres:223344@localhost/fastapi_eshop"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -43,7 +45,7 @@ def run_migrations_offline() -> None:
     """
     # url = config.get_main_option("sqlalchemy.url")
 
-    url = config.get_main_option(SQLALCHEMY_DATABASE_URL)
+    url = config.get_main_option(DATABASE_URL)
 
     context.configure(
         url=url,
@@ -64,7 +66,7 @@ def run_migrations_online() -> None:
 
     """
     configuration = config.get_section(config.config_ini_section)
-    configuration['sqlalchemy.url'] = SQLALCHEMY_DATABASE_URL
+    configuration['sqlalchemy.url'] = DATABASE_URL
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",

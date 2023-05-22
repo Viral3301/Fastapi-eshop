@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Boolean,ForeignKey
+from sqlalchemy import Column,Integer,String,Boolean,ForeignKey,Float
 from database import Base
 
 
@@ -26,7 +26,7 @@ class Vehicles(Base):
     amount_in_stock = Column(Integer)
     sale = Column(Boolean,default=False)
     category = Column(ForeignKey('Category.id'))
-    rating = Column(Integer,default=5)
+    rating = Column(Float)
 
 
 
@@ -42,6 +42,6 @@ class Accessories(Base):
     amount_in_stock = Column(Integer)
     sale = Column(Boolean,default=False)
     category = Column(ForeignKey('Category.id'))
-    rating = Column(Integer,default=5)
+    rating = Column(Float)
 
 
