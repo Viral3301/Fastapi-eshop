@@ -14,9 +14,9 @@
             <h2 class="title">Авторизация</h2>
         </div>
         <section class="task">
-            <form action="" method="POST" class="form">
-                <input class="form-login" type="text" name="task_title" placeholder="Логин"><br>
-                <input class="form-password" type="password" name="task_body" placeholder="Пароль"><br>
+            <form action="/auth/jwt/login" method="POST" class="form">
+                <input class="form-login" type="text" name="username" placeholder="Логин"><br>
+                <input class="form-password" type="password" name="password" placeholder="Пароль"><br>
                 <input class="save-btn" type="submit" value="Log in">
             </form>
         </section>

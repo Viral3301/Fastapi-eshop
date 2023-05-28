@@ -1,6 +1,6 @@
-from sqlalchemy import Column,Integer,String,Boolean,ForeignKey,Float
+from sqlalchemy import Column,Integer,String,Boolean,ForeignKey,Float,Date
 from database import Base
-
+from datetime import datetime
 
 
 class Category(Base):
@@ -45,3 +45,14 @@ class Accessories(Base):
     rating = Column(Float)
 
 
+class Users(Base):
+    __tablename__ = 'Users'
+
+    id = Column("id", Integer, primary_key=True)
+    email = Column("email", String, nullable=False)
+    username = Column("username", String, nullable=False)
+    registered_at = Column("registered_at",Date, default=datetime.now())
+    hashed_password = Column("hashed_password", String, nullable=False)
+    is_active = Column("is_active", Boolean, default=True, nullable=False)
+    is_superuser = Column("is_superuser", Boolean, default=False, nullable=False)
+    is_verified = Column("is_verified", Boolean, default=False, nullable=False)
