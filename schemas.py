@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional
-
+from fastapi import Form
 from fastapi_users import schemas
 
 
@@ -14,7 +14,18 @@ class UserRead(schemas.BaseUser[int]):
 
     class Config:
         orm_mode = True
-
+    
+    @classmethod
+    def as_form(
+        cls,
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...),
+        is_active: Optional[bool] = True,
+        is_superuser: Optional[bool] = False,
+        is_verified: Optional[bool] = False,
+    ):
+        return cls(username=username,email=email,password=password,is_active=is_active,is_superuser=is_superuser,is_verified=is_verified)
 
 class UserCreate(schemas.BaseUserCreate):
     username: str
@@ -23,3 +34,18 @@ class UserCreate(schemas.BaseUserCreate):
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
+    
+    class Config:
+        orm_mode = True
+
+    @classmethod
+    def as_form(
+        cls,
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...),
+        is_active: Optional[bool] = True,
+        is_superuser: Optional[bool] = False,
+        is_verified: Optional[bool] = False,
+    ):
+        return cls(username=username,email=email,password=password,is_active=is_active,is_superuser=is_superuser,is_verified=is_verified)
