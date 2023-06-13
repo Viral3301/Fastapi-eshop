@@ -716,14 +716,6 @@ body{
     margin-left: 10px;
 }
 
-button.catalog__filter-btngrid{
-
-}
-
-button.catalog__filter-btnline{
-
-}
-
 .catalog__inner{
     display: flex;   
 }
@@ -1113,4 +1105,29 @@ button.catalog__filter-btnline{
 
 .product-card__img{
     width: 100%;
+}
+
+.profile{
+    margin-bottom: 80px;
+}
+
+.profile__info{
+    font-size: 20px;
+    display: flex;
+}
+
+.user__list-item{
+    display: flex;
+    padding: 15px 0 6px;
+}
+
+.user__info-left{
+    padding-right: 15px;
+}
+
+.profile__image{
+    width: 300px;
+    height: 300px;
+    margin-right: 100px;
+    margin-left: 250px;
 }

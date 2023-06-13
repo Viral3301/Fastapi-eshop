@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="profile">
+   <div class="container">
+      <div class="profile__info">
+         <img src="{{ url_for('static',path='img/pfp.png') }}" alt="" class="profile__image">
+         <ul class="user__list">
+            <li class="user__list-item">
+               <div class="user__info-left">ID пользователя :</div><div class="user__info-right">{{user.id}}</div>
+            </li>
+            <li class="user__list-item">
+               <div class="user__info-left">Имя пользователя :</div><div class="user__info-right">{{user.username}}</div>
+            </li>
+            <li class="user__list-item">
+               <div class="user__info-left">Email :</div><div class="user__info-right">{{user.email}}</div>
+            </li>
+         </ul>
+      </div>
+   </div>
+</section>
+
+{% endblock content %}

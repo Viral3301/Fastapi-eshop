@@ -38,6 +38,8 @@ app.include_router(
     tags=["auth"],
 )
 
+current_user = fastapi_users.current_user()
+
 @app.get("/")
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
     raw_backpacks = await session.execute(select(Accessories).where(Accessories.category == 1))
@@ -97,3 +99,8 @@ async def CreateVehicle(request: Request,title: str,price: int,manufacturer: str
     session.add(new_vehicle)
     await session.commit()
     return {'response': "good"}
+
+
+@app.get("/profile")
+def protected_route(request: Request,session: AsyncSession = Depends(get_async_session),user: User = Depends(current_user)):
+    return templates.TemplateResponse('profile.html',{'request':request,'user': user})
