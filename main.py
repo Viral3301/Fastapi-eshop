@@ -1,16 +1,21 @@
 from fastapi import FastAPI,Request,Depends,File,UploadFile
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from starlette.responses import RedirectResponse
+import starlette.status as status
 from sqlalchemy.orm import Session
 from database import get_async_session,AsyncSession,User
 from eshop.models import *
 import shutil
+import requests
 from sqlalchemy import select
 from fastapi_users import fastapi_users,FastAPIUsers
 from auth import auth_backend
 from manager import get_user_manager
 from schemas import UserRead,UserCreate
 from fastapi.responses import RedirectResponse
+from fastapi_users.password import PasswordHelper
+
 
 app = FastAPI()
 
@@ -32,6 +37,7 @@ app.include_router(
     prefix="/auth/jwt",
     tags=["auth"],
 )
+
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
@@ -39,6 +45,21 @@ app.include_router(
 )
 
 current_user = fastapi_users.current_user()
+
+
+@app.post('/register2')
+async def reg(request:Request,session: AsyncSession = Depends(get_async_session)):
+    data = {"email": "string3","password": "string","is_active": True,"is_superuser": False,"is_verified": False,"username": "string3"}
+    return requests.post('http://127.0.0.1:8000/auth/register', json=data)
+
+
+@app.post('/register')
+async def reg(request:Request,session: AsyncSession = Depends(get_async_session),userdata = Depends(UserCreate.as_form)):
+    hashed_password = PasswordHelper().context.hash(str(userdata.password))
+    new_user = User(username=userdata.username,email=userdata.email,hashed_password=hashed_password,is_active=userdata.is_active,is_superuser=userdata.is_superuser,is_verified=userdata.is_verified)
+    session.add(new_user)
+    await session.commit()
+    return RedirectResponse(url='login',status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/")
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):

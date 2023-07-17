@@ -4,13 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = {extras = ["all"], version = "*"}
 psycopg2 = "*"
 alembic = "*"
 sqlalchemy-utils = "*"
 asyncpg = "*"
 fastapi-users = {extras = ["sqlalchemy"], version = "*"}
 sqlalchemy = {extras = ["asyncio"], version = "*"}
+fastapi = {extras = ["all"], version = "*"}
+requests = "*"
 
 [dev-packages]
 

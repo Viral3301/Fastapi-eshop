@@ -12,8 +12,6 @@ class UserRead(schemas.BaseUser[int]):
     is_superuser: bool = False
     is_verified: bool = False
 
-    class Config:
-        orm_mode = True
     
     @classmethod
     def as_form(
@@ -35,8 +33,6 @@ class UserCreate(schemas.BaseUserCreate):
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
     
-    class Config:
-        orm_mode = True
 
     @classmethod
     def as_form(
