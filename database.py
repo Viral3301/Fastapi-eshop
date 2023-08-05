@@ -21,6 +21,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     username = Column("username", String, nullable=False)
     registered_at = Column("registered_at",Date, default=datetime.now())
     hashed_password = Column("hashed_password", String, nullable=False)
+    image = Column("image",String,default='default_pfp.png')
     is_active = Column("is_active", Boolean, default=True, nullable=False)
     is_superuser = Column("is_superuser", Boolean, default=False, nullable=False)
     is_verified = Column("is_verified", Boolean, default=False, nullable=False)

@@ -1126,8 +1126,13 @@ body{
 }
 
 .profile__image{
-    width: 300px;
+    width: 320px;
     height: 300px;
+    margin-right: 100px;
+    margin-left: 250px;
+}
+
+.changepfp__form{
     margin-right: 100px;
     margin-left: 250px;
 }

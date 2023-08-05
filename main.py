@@ -8,7 +8,7 @@ from database import get_async_session,AsyncSession,User
 from eshop.models import *
 import shutil
 import requests
-from sqlalchemy import select
+from sqlalchemy import select,insert,update
 from fastapi_users import fastapi_users,FastAPIUsers
 from auth import auth_backend
 from manager import get_user_manager
@@ -125,3 +125,11 @@ async def CreateVehicle(request: Request,title: str,price: int,manufacturer: str
 @app.get("/profile")
 def protected_route(request: Request,session: AsyncSession = Depends(get_async_session),user: User = Depends(current_user)):
     return templates.TemplateResponse('profile.html',{'request':request,'user': user})
+
+@app.post("/changepfp")
+async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = Depends(current_user),session: AsyncSession = Depends(get_async_session)):
+    with open (f'content_img/{image.filename}',"wb") as buffer:
+        shutil.copyfileobj(image.file,buffer)
+    new_image = await session.execute(update(User).where(User.id == user.id).values(image=image.filename))
+    await session.commit()
+    return image

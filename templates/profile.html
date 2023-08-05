@@ -4,7 +4,13 @@
 <section class="profile">
    <div class="container">
       <div class="profile__info">
-         <img src="{{ url_for('static',path='img/pfp.png') }}" alt="" class="profile__image">
+         <div>
+            <img src="{{ url_for('content_img', path='/' + user.image) }}" alt="" class="profile__image">
+            <form action="changepfp" method="POST" enctype="multipart/form-data" class="changepfp__form">
+               <input class="form-image" type="file" name="image" placeholder="Фото"><br>
+               <input class="submit" type="submit" value="add">
+            </form>
+         </div>
          <ul class="user__list">
             <li class="user__list-item">
                <div class="user__info-left">ID пользователя :</div><div class="user__info-right">{{user.id}}</div>
