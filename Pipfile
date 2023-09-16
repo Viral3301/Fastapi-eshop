@@ -12,6 +12,7 @@ fastapi-users = {extras = ["sqlalchemy"], version = "*"}
 sqlalchemy = {extras = ["asyncio"], version = "*"}
 fastapi = {extras = ["all"], version = "*"}
 requests = "*"
+sqladmin = "*"
 
 [dev-packages]
 

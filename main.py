@@ -4,7 +4,7 @@ from starlette.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 import starlette.status as status
 from sqlalchemy.orm import Session
-from database import get_async_session,AsyncSession,User
+from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
 import shutil
 import requests
@@ -15,10 +15,21 @@ from manager import get_user_manager
 from schemas import UserRead,UserCreate
 from fastapi.responses import RedirectResponse
 from fastapi_users.password import PasswordHelper
-
+from sqladmin import Admin, ModelView
+from admin_models import AccesoryAdmin,VehicleAdmin
 
 app = FastAPI()
 
+admin = Admin(app, engine)
+
+
+class UserAdmin(ModelView, model=User):
+    column_list = [User.id, User.username]
+
+
+admin.add_view(UserAdmin)
+admin.add_view(VehicleAdmin)
+admin.add_view(AccesoryAdmin)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -45,12 +56,6 @@ app.include_router(
 )
 
 current_user = fastapi_users.current_user()
-
-
-@app.post('/register2')
-async def reg(request:Request,session: AsyncSession = Depends(get_async_session)):
-    data = {"email": "string3","password": "string","is_active": True,"is_superuser": False,"is_verified": False,"username": "string3"}
-    return requests.post('http://127.0.0.1:8000/auth/register', json=data)
 
 
 @app.post('/register')
