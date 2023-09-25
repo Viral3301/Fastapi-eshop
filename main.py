@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Request,Depends,File,UploadFile
+from fastapi import FastAPI,Request,Depends,File,UploadFile,Form
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
@@ -17,6 +17,7 @@ from fastapi.responses import RedirectResponse
 from fastapi_users.password import PasswordHelper
 from sqladmin import Admin, ModelView
 from admin_models import AccesoryAdmin,VehicleAdmin
+
 
 app = FastAPI()
 
@@ -138,3 +139,42 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     new_image = await session.execute(update(User).where(User.id == user.id).values(image=image.filename))
     await session.commit()
     return image
+
+@app.get("/search_by_name/")
+async def Search_By_Name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    content_raw = await session.execute(select(Accessories).where(Accessories.title.like(f'{name}%')))
+    data = content_raw.scalars().all()
+    data_length = len(data)
+    if data_length % 12 == 0:
+        pages_total = data_length // 12
+    else:
+        pages_total = data_length // 12 + 1 
+    start = (page_num - 1) * 12
+    end = start + 12
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+
+@app.get("/search_by_id/")
+async def Search_By_Id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    content_raw = await session.execute(select(Accessories).where(Accessories.product_code == code))
+    data = content_raw.scalars().all()
+    data_length = len(data)
+    if data_length % 12 == 0:
+        pages_total = data_length // 12
+    else:
+        pages_total = data_length // 12 + 1 
+    start = (page_num - 1) * 12
+    end = start + 12
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+
+@app.get("/search_by_manufacturer/")
+async def Search_By_Id(request: Request, manufacturer: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    content_raw = await session.execute(select(Accessories).where(Accessories.manufacturer.like(f'{manufacturer}%')))
+    data = content_raw.scalars().all()
+    data_length = len(data)
+    if data_length % 12 == 0:
+        pages_total = data_length // 12
+    else:
+        pages_total = data_length // 12 + 1 
+    start = (page_num - 1) * 12
+    end = start + 12
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)

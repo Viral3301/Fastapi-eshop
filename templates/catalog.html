@@ -105,7 +105,7 @@
                         <div class="product-item__wrapper ">
                             <button class="product-item__favorite"></button>
                             <button class="product-item__cart">
-                                <img src="img/cart-white.svg" alt="">
+                                <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
                             </button>
                             <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
                             <a class="product-item product-item--sale" href="/product/{{item.id}}">
