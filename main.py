@@ -79,6 +79,7 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 async def get_category(request: Request, category_id: int,page_num: int = 1,session: AsyncSession = Depends(get_async_session)):
     raw_data = await session.execute(select(Vehicles).where(Vehicles.category == category_id))
     data = raw_data.scalars().all()
+
     data_length = len(data)
     if data_length % 12 == 0:
         pages_total = data_length // 12
@@ -86,7 +87,11 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
         pages_total = data_length // 12 + 1 
     start = (page_num - 1) * 12
     end = start + 12
-    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page_num},)
+
+    raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
+    category_name = raw_category_name.scalars().all()
+
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page_num,"category_name":category_name},)
 
 @app.get("/product/{product_id}")
 async def product_detail(request: Request,product_id: int,session: AsyncSession = Depends(get_async_session)):

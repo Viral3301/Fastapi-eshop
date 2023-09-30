@@ -736,7 +736,8 @@ body{
 }
 
 .product-item__img{
-    max-width: 100%;
+    width: 230px;
+    height: 170px;
 }
 
 .pagination{

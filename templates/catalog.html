@@ -4,7 +4,9 @@
 
     <section class="catalog">
         <div class="container">
-            <h2 class="catalog__title">Гидроциклы</h2>
+            {% for category in category_name %}
+                <h2 class="catalog__title">{{category.name}}</h2>
+            {% endfor %}
             <div class="catalog__filter">
                 <div class="catalog__filter-items">
                     <button>Полноприводные</button>
@@ -108,13 +110,23 @@
                                 <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
                             </button>
                             <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
-                            <a class="product-item product-item--sale" href="/product/{{item.id}}">
-                                <p class="product-item__hover-text">Посмотреть товар</p>
-                                <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
-                                <h4 class="products-item__title">{{ item.title }}</h4>
-                                <p class="price product-item__price">{{ item.price }}</p>
-                                <p class="product-item__notify">Нет в наличии</p>
-                            </a>
+                            {% if item.sale == true %}
+                                <a class="product-item product-item--sale" href="/product/{{item.id}}">
+                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <h4 class="products-item__title">{{ item.title }}</h4>
+                                    <p class="price product-item__price">{{ item.price }}</p>
+                                    <p class="product-item__notify">Нет в наличии</p>
+                                </a>
+                            {% else %}
+                                <a class="product-item product-item" href="/product/{{item.id}}">
+                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <h4 class="products-item__title">{{ item.title }}</h4>
+                                    <p class="price product-item__price">{{ item.price }}</p>
+                                    <p class="product-item__notify">Нет в наличии</p>
+                                </a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                     <div class="pagination">
