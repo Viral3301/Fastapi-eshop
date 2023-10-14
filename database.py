@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:223344@localhost/fastapi_eshop"
+SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:223344@db/fastapi_eshop"
 
 Base = declarative_base()
 

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-psycopg2 = "*"
 alembic = "*"
 sqlalchemy-utils = "*"
 asyncpg = "*"
@@ -13,6 +12,9 @@ sqlalchemy = {extras = ["asyncio"], version = "*"}
 fastapi = {extras = ["all"], version = "*"}
 requests = "*"
 sqladmin = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

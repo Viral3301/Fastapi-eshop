@@ -8,7 +8,7 @@ from alembic import context
 
 from eshop.base import Base
 
-DATABASE_URL = "postgresql://postgres:223344@localhost/fastapi_eshop"
+DATABASE_URL = "postgresql://postgres:223344@db/fastapi_eshop"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
