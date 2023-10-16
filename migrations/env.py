@@ -5,10 +5,12 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from config import DB_HOST, DB_NAME, DB_PASS,DB_USER
+
 
 from eshop.base import Base
 
-DATABASE_URL = "postgresql://postgres:223344@db/fastapi_eshop"
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
