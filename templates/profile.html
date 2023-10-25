@@ -7,8 +7,11 @@
          <div>
             <img src="{{ url_for('content_img', path='/' + user.image) }}" alt="" class="profile__image">
             <form action="changepfp" method="POST" enctype="multipart/form-data" class="changepfp__form">
-               <input class="form-image" type="file" name="image" placeholder="Фото"><br>
-               <input class="submit" type="submit" value="add">
+               <label class="input-file">
+                  <input type="file" name="image">
+                  <span class="input-file-btn">Изменить фотографию</span>
+                  <input class="submit" class="input-file-save-btn" type="submit" value="✓">
+             </label>
             </form>
          </div>
          <ul class="user__list">
@@ -20,6 +23,16 @@
             </li>
             <li class="user__list-item">
                <div class="user__info-left">Email :</div><div class="user__info-right">{{user.email}}</div>
+            </li>
+            <li class="user__list-item">
+               <div class="user__info-left">Дата регистрации :</div><div class="user__info-right">{{user.registered_at}}</div>
+            </li>
+            <li class="user__list-item">
+               {% if user.is_verified == true %}
+                  <div class="user__info-left">Подтвержденный пользователь :</div><div class="user__info-right" style="color: green;">Да</div>
+               {% else %}
+                  <div class="user__info-left">Подтвержденный пользователь :</div><div class="user__info-right" style="color: red;">Нет</div>
+               {% endif %}
             </li>
          </ul>
       </div>
