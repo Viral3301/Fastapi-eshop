@@ -727,8 +727,16 @@ body{
 
 .catalog__inner-list{
     display: flex;
-    justify-content: space-between;
+
     flex-wrap: wrap;
+}
+
+.product-item__wrapper:nth-child(1n){
+    margin-right: 30px;
+}
+
+.product-item__wrapper:nth-child(3n){
+    margin-right: 0px;
 }
 
 .catalog__inner-list .product-item__wrapper{
@@ -737,7 +745,7 @@ body{
 
 .product-item__img{
     width: 230px;
-    height: 170px;
+    height: 220px;
 }
 
 .pagination{

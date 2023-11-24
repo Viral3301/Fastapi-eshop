@@ -29,36 +29,69 @@
                             <a href="" class="tab product-card__tab tab--active">Характеристики</a>
                             <a href="" class="tab product-card__tab">Наличие в магазине</a>
                         </div>
-                        <div class="tabs-container">
-                            <div class="tabs-content product-card__tab-content tabs-content--active">
-                                <ul class="product-card__list">
-                                    <li class="product-card__item">
-                                        <div class="product-card__item-left">Производитель</div>
-                                        <div class="product-card__item-right">{{ item.manufacturer}}</div>
-                                    </li>
-                                    <li class="product-card__item">
-                                        <div class="product-card__item-left">Количество мест</div>
-                                        <div class="product-card__item-right">{{item.seats}}</div>
-                                    </li>
-                                    <li class="product-card__item">
-                                        <div class="product-card__item-left">Мощность л.с</div>
-                                        <div class="product-card__item-right">{{item.engine}}</div>
-                                    </li>
-                                    <li class="product-card__item">
-                                        <div class="product-card__item-left">Двигатель</div>
-                                        <div class="product-card__item-right">{{item.engine_type}}</div>
-                                    </li>
-                                    <li class="product-card__item">
-                                        <div class="product-card__item-left">Год выпуска</div>
-                                        <div class="product-card__item-right">{{item.year}}</div>
-                                    </li>
-                                </ul>
-                                <a href="" class="product-card__more">Показать еще</a>
-                                <div class="product-card__btn">
-                                    <button>Купить</button>
+                        {% if item.category >2 %}
+                            <div class="tabs-container">
+                                <div class="tabs-content product-card__tab-content tabs-content--active">
+                                    <ul class="product-card__list">
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Производитель</div>
+                                            <div class="product-card__item-right">{{ item.manufacturer}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Количество мест</div>
+                                            <div class="product-card__item-right">{{item.seats}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Мощность л.с</div>
+                                            <div class="product-card__item-right">{{item.engine}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Двигатель</div>
+                                            <div class="product-card__item-right">{{item.engine_type}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Год выпуска</div>
+                                            <div class="product-card__item-right">{{item.year}}</div>
+                                        </li>
+                                    </ul>
+                                    <a href="" class="product-card__more">Показать еще</a>
+                                    <div class="product-card__btn">
+                                        <button>Купить</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% else %}
+                            <div class="tabs-container">
+                                <div class="tabs-content product-card__tab-content tabs-content--active">
+                                    <ul class="product-card__list">
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Страна производитель</div>
+                                            <div class="product-card__item-right">{{ item.manufacturer}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Цвет</div>
+                                            <div class="product-card__item-right">{{item.color}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Бренд</div>
+                                            <div class="product-card__item-right">{{item.company}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Материал</div>
+                                            <div class="product-card__item-right">{{item.material}}</div>
+                                        </li>
+                                        <li class="product-card__item">
+                                            <div class="product-card__item-left">Гарантия</div>
+                                            <div class="product-card__item-right">{{item.guarantee}}</div>
+                                        </li>
+                                    </ul>
+                                    <a href="" class="product-card__more">Показать еще</a>
+                                    <div class="product-card__btn">
+                                        <button>Купить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

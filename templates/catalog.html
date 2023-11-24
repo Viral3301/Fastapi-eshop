@@ -106,25 +106,26 @@
                     {% for item in data %}
                         <div class="product-item__wrapper ">
                             <button class="product-item__favorite"></button>
-                            <button class="product-item__cart">
-                                <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
-                            </button>
+                            
                             <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
                             {% if item.sale == true %}
-                                <a class="product-item product-item--sale" href="/product/{{item.id}}">
+                                <a class="product-item product-item--sale" href="/product/{{item.category}}/{{item.id}}">
                                     <p class="product-item__hover-text">Посмотреть товар</p>
                                     <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
                                     <h4 class="products-item__title">{{ item.title }}</h4>
-                                    <p class="price product-item__price">{{ item.price }}</p>
+                                    <p class="price product-item__price">{{ item.price }}₽</p>
                                     <p class="product-item__notify">Нет в наличии</p>
                                 </a>
                             {% else %}
-                                <a class="product-item product-item" href="/product/{{item.id}}">
+                                <a class="product-item product-item" href="/product/{{item.category}}/{{item.id}}">
                                     <p class="product-item__hover-text">Посмотреть товар</p>
                                     <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
                                     <h4 class="products-item__title">{{ item.title }}</h4>
-                                    <p class="price product-item__price">{{ item.price }}</p>
+                                    <p class="price product-item__price">{{ item.price }}₽  </p>
                                     <p class="product-item__notify">Нет в наличии</p>
+                                    <button class="product-item__cart">
+                                        <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
+                                    </button>
                                 </a>
                             {% endif %}
                         </div>
@@ -132,7 +133,7 @@
                     <div class="pagination">
                         <ul class="pagination-list">
                             {% for pagination in range(1,pages_total) %}
-                                <li class="pagination-list__item active"><a href="/category/{{category_id}}/{{pagination}}">{{pagination}}</a></li>
+                                <li class="pagination-list__item active"><a href="{{pagination}}">{{pagination}}</a></li>
                             {% endfor %}
                         </ul>
                     </div>

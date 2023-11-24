@@ -3,12 +3,12 @@ from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 import starlette.status as status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
 import shutil
 import requests
-from sqlalchemy import select,insert,update
+from sqlalchemy import select,insert,update,and_
 from fastapi_users import fastapi_users,FastAPIUsers
 from auth import auth_backend
 from manager import get_user_manager
@@ -16,7 +16,9 @@ from schemas import UserRead,UserCreate
 from fastapi.responses import RedirectResponse
 from fastapi_users.password import PasswordHelper
 from sqladmin import Admin, ModelView
-from admin_models import AccesoryAdmin,VehicleAdmin
+from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
+from typing import List,Annotated
+from schemas import Operation,Product
 
 
 app = FastAPI()
@@ -31,6 +33,7 @@ class UserAdmin(ModelView, model=User):
 admin.add_view(UserAdmin)
 admin.add_view(VehicleAdmin)
 admin.add_view(AccesoryAdmin)
+admin.add_view(CategoryAdmin)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -59,14 +62,6 @@ app.include_router(
 current_user = fastapi_users.current_user()
 
 
-@app.post('/register')
-async def reg(request:Request,session: AsyncSession = Depends(get_async_session),userdata = Depends(UserCreate.as_form)):
-    hashed_password = PasswordHelper().context.hash(str(userdata.password))
-    new_user = User(username=userdata.username,email=userdata.email,hashed_password=hashed_password,is_active=userdata.is_active,is_superuser=userdata.is_superuser,is_verified=userdata.is_verified)
-    session.add(new_user)
-    await session.commit()
-    return RedirectResponse(url='login',status_code=status.HTTP_303_SEE_OTHER)
-
 @app.get("/")
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
     raw_backpacks = await session.execute(select(Accessories).where(Accessories.category == 1))
@@ -77,7 +72,7 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 
 @app.get("/category/{category_id}/{page_num}/")
 async def get_category(request: Request, category_id: int,page_num: int = 1,session: AsyncSession = Depends(get_async_session)):
-    raw_data = await session.execute(select(Vehicles).where(Vehicles.category == category_id))
+    raw_data = await session.execute(select(Vehicles).where(Vehicles.category == category_id).order_by(Vehicles.id))
     data = raw_data.scalars().all()
 
     data_length = len(data)
@@ -93,10 +88,15 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
 
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page_num,"category_name":category_name},)
 
-@app.get("/product/{product_id}")
-async def product_detail(request: Request,product_id: int,session: AsyncSession = Depends(get_async_session)):
-    raw_product = await session.execute(select(Vehicles).where(Vehicles.id == product_id))
-    product = raw_product.scalars().all()
+@app.get("/product/{category_id}/{product_id}" , response_model=List[Product])
+async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):
+    if category_id >2:
+        stmt = select(Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year).where(Vehicles.id == product_id, Vehicles.category == category_id)
+    else:
+        stmt = select(Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company).where(Accessories.id == product_id, Accessories.category == category_id)
+    content_raw = await session.execute(stmt)
+    product = content_raw.all()
+
     return templates.TemplateResponse('product-page.html',{'request':request,'product':product})
 
 @app.get("/login")
@@ -145,10 +145,13 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     await session.commit()
     return image
 
-@app.get("/search_by_name/")
-async def Search_By_Name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-    content_raw = await session.execute(select(Accessories).where(Accessories.title.like(f'{name}%')))
-    data = content_raw.scalars().all()
+@app.get("/search_by_name/" , response_model=List[Operation])
+async def search_by_name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name}%'))
+    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name}%'))
+    query = stmt_1.union(stmt_2)
+    content_raw = await session.execute(query)
+    data = content_raw.all()
     data_length = len(data)
     if data_length % 12 == 0:
         pages_total = data_length // 12
@@ -158,10 +161,13 @@ async def Search_By_Name(request: Request, name: str,page_num: int = 1, session:
     end = start + 12
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.get("/search_by_id/")
-async def Search_By_Id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-    content_raw = await session.execute(select(Accessories).where(Accessories.product_code == code))
-    data = content_raw.scalars().all()
+@app.get("/search_by_id/" , response_model=List[Operation])
+async def search_by_id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.product_code == code)
+    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.product_code == code)
+    query = stmt_1.union(stmt_2)
+    content_raw = await session.execute(query)
+    data = content_raw.all()
     data_length = len(data)
     if data_length % 12 == 0:
         pages_total = data_length // 12
@@ -171,10 +177,16 @@ async def Search_By_Id(request: Request, code: int,page_num: int = 1, session: A
     end = start + 12
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.get("/search_by_manufacturer/")
-async def Search_By_Id(request: Request, manufacturer: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-    content_raw = await session.execute(select(Accessories).where(Accessories.manufacturer.like(f'{manufacturer}%')))
-    data = content_raw.scalars().all()
+@app.post("/search_by_manufacturer/", response_model=List[Operation])
+async def search_by_manufacturer(request: Request, manufacturerr: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    
+    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.manufacturer == manufacturerr)
+    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.manufacturer == manufacturerr)
+    query = stmt_1.union(stmt_2)
+    content_raw = await session.execute(query)
+    data = content_raw.all()
+
+
     data_length = len(data)
     if data_length % 12 == 0:
         pages_total = data_length // 12
