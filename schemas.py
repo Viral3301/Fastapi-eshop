@@ -58,7 +58,6 @@ class Operation(BaseModel):
   category: int
 
 
-
 class Product(BaseModel):
   model_config: ConfigDict(from_attributes=True)
 

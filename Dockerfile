@@ -11,9 +11,7 @@ RUN pip install pipenv
 
 RUN pipenv install --system
 
-
 COPY . .
-
 
 
 

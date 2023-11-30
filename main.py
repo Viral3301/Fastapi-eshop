@@ -72,8 +72,13 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 
 @app.get("/category/{category_id}/{page_num}/")
 async def get_category(request: Request, category_id: int,page_num: int = 1,session: AsyncSession = Depends(get_async_session)):
-    raw_data = await session.execute(select(Vehicles).where(Vehicles.category == category_id).order_by(Vehicles.id))
-    data = raw_data.scalars().all()
+
+    if category_id >2:
+        stmt = select(Vehicles.id,Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.category == category_id)
+    else:
+        stmt = select(Accessories.id,Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.category == category_id)
+    content_raw = await session.execute(stmt)
+    data = content_raw.all()
 
     data_length = len(data)
     if data_length % 12 == 0:
@@ -91,9 +96,9 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
 @app.get("/product/{category_id}/{product_id}" , response_model=List[Product])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):
     if category_id >2:
-        stmt = select(Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year).where(Vehicles.id == product_id, Vehicles.category == category_id)
+        stmt = select(Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.id == product_id, Vehicles.category == category_id)
     else:
-        stmt = select(Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company).where(Accessories.id == product_id, Accessories.category == category_id)
+        stmt = select(Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.id == product_id, Accessories.category == category_id)
     content_raw = await session.execute(stmt)
     product = content_raw.all()
 
@@ -147,8 +152,8 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
 
 @app.get("/search_by_name/" , response_model=List[Operation])
 async def search_by_name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name}%'))
-    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name}%'))
+    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name.capitalize()}%'))
+    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name.capitalize()}%'))
     query = stmt_1.union(stmt_2)
     content_raw = await session.execute(query)
     data = content_raw.all()
@@ -161,7 +166,7 @@ async def search_by_name(request: Request, name: str,page_num: int = 1, session:
     end = start + 12
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.get("/search_by_id/" , response_model=List[Operation])
+@app.get("/search_by_code/" , response_model=List[Operation])
 async def search_by_id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.product_code == code)
     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.product_code == code)
@@ -178,10 +183,10 @@ async def search_by_id(request: Request, code: int,page_num: int = 1, session: A
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
 @app.post("/search_by_manufacturer/", response_model=List[Operation])
-async def search_by_manufacturer(request: Request, manufacturerr: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     
-    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.manufacturer == manufacturerr)
-    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.manufacturer == manufacturerr)
+    stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.manufacturer == manufacturer.capitalize())
+    stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.manufacturer == manufacturer.capitalize())
     query = stmt_1.union(stmt_2)
     content_raw = await session.execute(query)
     data = content_raw.all()
