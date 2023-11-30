@@ -150,7 +150,7 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     await session.commit()
     return image
 
-@app.get("/search_by_name/" , response_model=List[Operation])
+@app.post("/search_by_name/" , response_model=List[Operation])
 async def search_by_name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name.capitalize()}%'))
     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name.capitalize()}%'))
@@ -166,7 +166,7 @@ async def search_by_name(request: Request, name: str,page_num: int = 1, session:
     end = start + 12
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.get("/search_by_code/" , response_model=List[Operation])
+@app.post("/search_by_id/" , response_model=List[Operation])
 async def search_by_id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.product_code == code)
     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.product_code == code)
