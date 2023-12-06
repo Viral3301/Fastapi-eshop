@@ -16,6 +16,9 @@ gunicorn = "*"
 psycopg2-binary = "*"
 psycopg2 = "*"
 python-dotenv = "*"
+pytest = "*"
+pytest-asyncio = "*"
+coverage = "*"
 
 [dev-packages]
 
