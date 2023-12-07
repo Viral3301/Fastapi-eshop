@@ -48,7 +48,7 @@ def event_loop():
 
     res._close()
 
-client = TestClient(app)
+client = TestClient(app)    
 
 @pytest_asyncio.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, None]:

@@ -1,24 +1,20 @@
-from fastapi import FastAPI,Request,Depends,File,UploadFile,Form
+from fastapi import FastAPI,Request,Depends,File,UploadFile,Form,HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from starlette.responses import RedirectResponse
-import starlette.status as status
-from sqlalchemy.orm import Session, load_only
 from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
+from eshop.handlers import not_found_error
 import shutil
-import requests
 from sqlalchemy import select,insert,update,and_
 from fastapi_users import fastapi_users,FastAPIUsers
-from auth import auth_backend
-from manager import get_user_manager
-from schemas import UserRead,UserCreate
-from fastapi.responses import RedirectResponse
-from fastapi_users.password import PasswordHelper
+from eshop.auth.auth import auth_backend
+from eshop.auth.manager import get_user_manager
+from eshop.schemas import UserRead,UserCreate,Operation,Product
 from sqladmin import Admin, ModelView
 from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from typing import List,Annotated
-from schemas import Operation,Product
+
 
 
 app = FastAPI()
@@ -101,6 +97,8 @@ async def product_detail(request: Request,category_id : int,product_id: int,sess
         stmt = select(Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.id == product_id, Accessories.category == category_id)
     content_raw = await session.execute(stmt)
     product = content_raw.all()
+    if product == []:
+        raise HTTPException(status_code=404)
 
     return templates.TemplateResponse('product-page.html',{'request':request,'product':product})
 
@@ -150,8 +148,8 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     await session.commit()
     return image
 
-@app.post("/search_by_name/" , response_model=List[Operation])
-async def search_by_name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+@app.post("/search_by_name" , response_model=List[Operation])
+async def search_by_name(request: Request, name: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name.capitalize()}%'))
     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name.capitalize()}%'))
     query = stmt_1.union(stmt_2)
@@ -164,25 +162,38 @@ async def search_by_name(request: Request, name: str,page_num: int = 1, session:
         pages_total = data_length // 12 + 1 
     start = (page_num - 1) * 12
     end = start + 12
+
+    if data ==[]:
+        raise HTTPException(status_code=404)
+
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.post("/search_by_id/" , response_model=List[Operation])
-async def search_by_id(request: Request, code: int,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+@app.post("/search_by_code" , response_model=List[Operation])
+async def search_by_id(request: Request, code: Annotated[int,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.product_code == code)
     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.product_code == code)
     query = stmt_1.union(stmt_2)
     content_raw = await session.execute(query)
     data = content_raw.all()
     data_length = len(data)
+
+    if data ==[]:
+        raise HTTPException(status_code=404)
+
+
     if data_length % 12 == 0:
         pages_total = data_length // 12
     else:
         pages_total = data_length // 12 + 1 
     start = (page_num - 1) * 12
     end = start + 12
+
+    if data ==[]:
+        raise HTTPException(status_code=404)
+
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-@app.post("/search_by_manufacturer/", response_model=List[Operation])
+@app.post("/search_by_manufacturer", response_model=List[Operation])
 async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     
     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.manufacturer == manufacturer.capitalize())
@@ -199,4 +210,14 @@ async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,F
         pages_total = data_length // 12 + 1 
     start = (page_num - 1) * 12
     end = start + 12
+
+    if data ==[]:
+        raise HTTPException(status_code=404)
+
+
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+
+
+@app.exception_handler(404)
+def not_found_exception_handler(request: Request, exc: HTTPException):
+    return not_found_error(request, exc)
