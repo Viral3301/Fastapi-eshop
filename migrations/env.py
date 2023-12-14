@@ -8,7 +8,7 @@ from alembic import context
 from config import DB_HOST, DB_NAME, DB_PASS,DB_USER
 
 
-from eshop.base import Base
+from eshop.models import Base
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 

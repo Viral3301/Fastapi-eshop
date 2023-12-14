@@ -1,5 +1,4 @@
 from eshop.models import *
-from database import User
 from sqladmin import Admin, ModelView
 
 class UserAdmin(ModelView, model=User):

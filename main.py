@@ -6,6 +6,7 @@ from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
 from eshop.handlers import not_found_error
 import shutil
+from eshop.router import pagination
 from sqlalchemy import select,insert,update,and_
 from fastapi_users import fastapi_users,FastAPIUsers
 from eshop.auth.auth import auth_backend
@@ -14,6 +15,12 @@ from eshop.schemas import UserRead,UserCreate,Operation,Product
 from sqladmin import Admin, ModelView
 from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from typing import List,Annotated
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from eshop.router import create_router
+from redis import asyncio as aioredis
+import redis
 
 
 
@@ -43,6 +50,8 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
+app.include_router(create_router)
+
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
@@ -60,13 +69,13 @@ current_user = fastapi_users.current_user()
 
 @app.get("/")
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
-    raw_backpacks = await session.execute(select(Accessories).where(Accessories.category == 1))
-    raw_swimsuits = await session.execute(select(Accessories).where(Accessories.category == 2))
+    raw_backpacks = await session.execute(select(Accessories).where(Accessories.category == 1).order_by(Accessories.id))
+    raw_swimsuits = await session.execute(select(Accessories).where(Accessories.category == 2).order_by(Accessories.id))
     backpacks = raw_backpacks.scalars().all()
     swimsuits = raw_swimsuits.scalars().all()
     return templates.TemplateResponse('home.html',{'request':request,'backpacks': backpacks,'swimsuits':swimsuits})
 
-@app.get("/category/{category_id}/{page_num}/")
+@app.get("/category/{category_id}/page={page_num}/")
 async def get_category(request: Request, category_id: int,page_num: int = 1,session: AsyncSession = Depends(get_async_session)):
 
     if category_id >2:
@@ -76,13 +85,7 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
     content_raw = await session.execute(stmt)
     data = content_raw.all()
 
-    data_length = len(data)
-    if data_length % 12 == 0:
-        pages_total = data_length // 12
-    else:
-        pages_total = data_length // 12 + 1 
-    start = (page_num - 1) * 12
-    end = start + 12
+    start,end,page_num,pages_total = pagination(data,page_num)
 
     raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
     category_name = raw_category_name.scalars().all()
@@ -110,31 +113,6 @@ async def login(request: Request,session: AsyncSession = Depends(get_async_sessi
 async def register(request: Request,session: AsyncSession = Depends(get_async_session)):
     return templates.TemplateResponse('registration.html',{'request':request})
 
-@app.post("/create")
-async def CreateAcessory(request: Request,title: str,price: int,manufacturer: str ,amount_in_stock: int,sale: bool,category:int,rating: float,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
-    with open (f'content_img/{image.filename}',"wb") as buffer:
-        shutil.copyfileobj(image.file,buffer)
-    new_accesory = Accessories(title=title,image=image.filename,price=price,manufacturer=manufacturer,amount_in_stock=amount_in_stock,sale=sale,category=category,rating = rating)
-    session.add(new_accesory)
-    await session.commit()
-    return {'response': "good"}
-
-@app.post("/createcategory")
-async def CreateCategory(request: Request,name: str,session: AsyncSession = Depends(get_async_session)):
-    new_category = Category(name=name)
-    session.add(new_category)
-    await session.commit()
-    return {'response': "good"}
-
-@app.post("/createvehicle")
-async def CreateVehicle(request: Request,title: str,price: int,manufacturer: str ,seats:int,engine:int,engine_type: str,year:int,amount_in_stock: int,sale: bool,category:int,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
-    with open (f'content_img/{image.filename}',"wb") as buffer:
-        shutil.copyfileobj(image.file,buffer)
-    new_vehicle = Vehicles(title=title,image=image.filename,price=price,manufacturer=manufacturer,seats=seats,engine=engine,engine_type=engine_type,year=year,amount_in_stock=amount_in_stock,sale=sale,category=category)
-    session.add(new_vehicle)
-    await session.commit()
-    return {'response': "good"}
-
 
 @app.get("/profile")
 def protected_route(request: Request,session: AsyncSession = Depends(get_async_session),user: User = Depends(current_user)):
@@ -155,13 +133,8 @@ async def search_by_name(request: Request, name: Annotated[str,Form()],page_num:
     query = stmt_1.union(stmt_2)
     content_raw = await session.execute(query)
     data = content_raw.all()
-    data_length = len(data)
-    if data_length % 12 == 0:
-        pages_total = data_length // 12
-    else:
-        pages_total = data_length // 12 + 1 
-    start = (page_num - 1) * 12
-    end = start + 12
+
+    start,end,page_num,pages_total = pagination(data,page_num)
 
     if data ==[]:
         raise HTTPException(status_code=404)
@@ -175,18 +148,8 @@ async def search_by_id(request: Request, code: Annotated[int,Form()],page_num: i
     query = stmt_1.union(stmt_2)
     content_raw = await session.execute(query)
     data = content_raw.all()
-    data_length = len(data)
 
-    if data ==[]:
-        raise HTTPException(status_code=404)
-
-
-    if data_length % 12 == 0:
-        pages_total = data_length // 12
-    else:
-        pages_total = data_length // 12 + 1 
-    start = (page_num - 1) * 12
-    end = start + 12
+    start,end,page_num,pages_total = pagination(data,page_num)
 
     if data ==[]:
         raise HTTPException(status_code=404)
@@ -203,13 +166,7 @@ async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,F
     data = content_raw.all()
 
 
-    data_length = len(data)
-    if data_length % 12 == 0:
-        pages_total = data_length // 12
-    else:
-        pages_total = data_length // 12 + 1 
-    start = (page_num - 1) * 12
-    end = start + 12
+    start,end,page_num,pages_total = pagination(data,page_num)
 
     if data ==[]:
         raise HTTPException(status_code=404)

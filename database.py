@@ -1,30 +1,13 @@
 from typing import AsyncGenerator
-from sqlalchemy import Column,Integer,String,Boolean,ForeignKey,Float,Date
-from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase,SQLAlchemyBaseUserTable
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
 from fastapi import Depends
-from sqlalchemy.ext.declarative import declarative_base
+from eshop.models import User
 from config import DB_HOST, DB_NAME, DB_PASS,DB_USER
-
+from eshop.models import Base,User
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
-
-Base = declarative_base()
-
-
-class User(SQLAlchemyBaseUserTable[int], Base):
-    id = Column("id", Integer, primary_key=True)
-    email = Column("email", String, nullable=False)
-    username = Column("username", String, nullable=False)
-    registered_at = Column("registered_at",Date, default=datetime.now())
-    hashed_password = Column("hashed_password", String, nullable=False)
-    image = Column("image",String,default='default_pfp.png')
-    is_active = Column("is_active", Boolean, default=True, nullable=False)
-    is_superuser = Column("is_superuser", Boolean, default=False, nullable=False)
-    is_verified = Column("is_verified", Boolean, default=False, nullable=False)
 
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL)

@@ -19,6 +19,8 @@ python-dotenv = "*"
 pytest = "*"
 pytest-asyncio = "*"
 coverage = "*"
+fastapi-cache2 = {extras = ["redis"], version = "*"}
+aioredis = "*"
 
 [dev-packages]
 
