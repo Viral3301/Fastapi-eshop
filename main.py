@@ -115,6 +115,10 @@ async def register(request: Request,session: AsyncSession = Depends(get_async_se
 def protected_route(request: Request,session: AsyncSession = Depends(get_async_session),user: User = Depends(current_user)):
     return templates.TemplateResponse('profile.html',{'request':request,'user': user})
 
+@app.get('/cart',tags=['nav'])
+async def shopping_cart(request: Request,session: AsyncSession = Depends(get_async_session)):
+    return templates.TemplateResponse('cart.html',{"request":request})
+
 @app.post("/changepfp",tags=['nav'])
 async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = Depends(current_user),session: AsyncSession = Depends(get_async_session)):
     with open (f'content_img/{image.filename}',"wb") as buffer:
@@ -122,6 +126,7 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     new_image = await session.execute(update(User).where(User.id == user.id).values(image=image.filename))
     await session.commit()
     return image
+
 
 
 @app.exception_handler(404)

@@ -1,0 +1,98 @@
+{% extends 'base1.html' %}  
+
+{% block content %}
+<section class="cart">
+    <div class="container">
+        <div class="cart__top">
+            <h1 class="title" style="border-bottom: 3px solid rgb(45 38 38); margin: 40px; padding: 20px;">Корзина</h1>
+        </div>
+        <ul class="cart__product-list">
+            <li class="cart__product">
+                <div class="cart__content">
+                    <a href="" class="cart__content-delete">✕</a>
+                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
+                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
+                    <div class="quantity">
+                        <button class="plus-btn" type="button" name="button">
+                          <span style="color: #808080;">+</span>
+                        </button>
+                        <input type="text" name="name" value="1">
+                        <button class="minus-btn" type="button" name="button">
+                            <span style="color: #808080;">-</span>
+                        </button>
+                      </div>
+                      <span class="cart__content-price">2500₽</span>
+                </div>
+            </li>
+            <li class="cart__product">
+                <div class="cart__content">
+                    <a href="" class="cart__content-delete">✕</a>
+                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
+                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
+                    <div class="quantity">
+                        <button class="plus-btn" type="button" name="button">
+                          <span style="color: #808080;">+</span>
+                        </button>
+                        <input type="text" name="name" value="1">
+                        <button class="minus-btn" type="button" name="button">
+                            <span style="color: #808080;">-</span>
+                        </button>
+                      </div>
+                      <span class="cart__content-price">2500₽</span>
+                </div>
+            </li>
+            <li class="cart__product">
+                <div class="cart__content">
+                    <a href="" class="cart__content-delete">✕</a>
+                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
+                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
+                    <div class="quantity">
+                        <button class="plus-btn" type="button" name="button">
+                          <span style="color: #808080;">+</span>
+                        </button>
+                        <input type="text" name="name" value="1">
+                        <button class="minus-btn" type="button" name="button">
+                            <span style="color: #808080;">-</span>
+                        </button>
+                      </div>
+                      <span class="cart__content-price">2500₽</span>
+                </div>
+            </li>
+        </ul>
+        <div class="cart__bottom">
+            <div class="promocode">
+                <div class="promocode__top"><span>ПРОМОКОДЫ</span></div>
+                <form action="" class="promocode__form">
+                    <input type="text" placeholder="Введите купон" class="promocode__form-input">
+                    <input type="submit" class="promocode__form-submit">
+                </form>
+            </div>
+            <div class="checkout">
+                <div class="checkout__top"><span>ОФОРМЛЕНИЕ ЗАКАЗА</span></div>
+                <div class="checkout__bottom">
+                    <ul class="checkout__item-list">
+                        <li class="checkout__item">
+                            <div class="checkout__item-left">Сумма</div>
+                            <div class="checkout__item-right">7500₽</div>
+                        </li>
+                        <li class="checkout__item">
+                            <div class="checkout__item-left">Скидка</div>
+                            <div class="checkout__item-right">5%</div>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li class="checkout__summary">
+                            <div class="checkout__item-left">Итого:</div>
+                            <div class="checkout__item-right">7125₽</div>
+                        </li>
+                    </ul>
+                    <form action="" class="checkout__form">
+                        <input type="text" placeholder="Введите телефон" class="checkout__form-input">
+                        <input type="submit" class="checkout__form-submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
