@@ -17,6 +17,7 @@ body{
     font-size: 24px;
     justify-content: center;
     height: inherit;
+    font-family: 'SFProDisplay-Bold', sans-serif;
 }
 
 .wrapper{

@@ -1,10 +1,11 @@
 from typing import List
 from fastapi import FastAPI,Request,Depends,File,UploadFile,Form,HTTPException
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
-from eshop.exceptions import not_found_error
+from eshop.exceptions import Unauthorized_redirect, not_found_error
 import shutil
 from eshop.routers.create_router import pagination
 from sqlalchemy import select,update
@@ -16,7 +17,7 @@ from sqladmin import Admin, ModelView
 from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
 from eshop.routers.search_router import search_router
-from redis import asyncio as aioredis
+
 
 
 
@@ -63,6 +64,13 @@ app.include_router(
 
 current_user = fastapi_users.current_user()
 
+
+favicon_path = 'static/img/favicon.svg'
+
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 @app.get("/",tags=['nav'])
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
@@ -128,7 +136,10 @@ async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = 
     return image
 
 
-
 @app.exception_handler(404)
-def not_found_exception_handler(request: Request, exc: HTTPException):
+def Not_found_exception_handler(request: Request, exc: HTTPException):
     return not_found_error(request, exc)
+
+@app.exception_handler(401)
+def Unauthorized_exception_handler(request: Request, exc: HTTPException):
+    return Unauthorized_redirect(request, exc)

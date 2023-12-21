@@ -36,14 +36,15 @@ $(function(){
         ratedFill: "#1C62CD",
         spacing: "7x",
         normalFill: "#c4c4c4",
-        readOnly: true
+        readOnly: true,
+        fullStar: true
     });
 
     $('.input-file input[type=file]').on('change', function(){
 	let file = this.files[0];
 	$(this).next().html(file.name);
 });
-
+    
 $('.minus-btn').on('click', function(e) {
     e.preventDefault();
     var $this = $(this);
@@ -74,6 +75,8 @@ $('.plus-btn').on('click', function(e) {
  
     $input.val(value);
 });
+
+
 
 });
 

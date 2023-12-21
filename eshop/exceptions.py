@@ -1,4 +1,4 @@
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse,RedirectResponse
 from starlette.requests import Request
 from fastapi import HTTPException
 
@@ -25,3 +25,5 @@ def not_found_error(request: Request, exc: HTTPException):
         """,
     )
 
+def Unauthorized_redirect(request:Request,exc: HTTPException):
+    return RedirectResponse('/login')
