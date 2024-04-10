@@ -39,17 +39,6 @@ class Vehicles(Base):
     category: Mapped[int] = mapped_column(ForeignKey('Category.id', ondelete="CASCADE"))
     rating: Mapped[float] = mapped_column(nullable=True)
 
-class User(SQLAlchemyBaseUserTable[int], Base):
-    id: Mapped[intpk]   
-    email: Mapped[str]
-    username: Mapped[str_60]
-    registered_at: Mapped[datetime.date] = mapped_column(server_default=func.now())
-    hashed_password: Mapped[str]
-    image: Mapped[str] = mapped_column(default="default.pfp")
-    is_active: Mapped[bool] = mapped_column(default=True)
-    is_superuser: Mapped[bool] = mapped_column(default=False)
-    is_verified: Mapped[bool] = mapped_column(default=False)
-
 class Accessories(Base):
     __tablename__ = 'Accessories'
 
