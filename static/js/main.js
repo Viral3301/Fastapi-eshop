@@ -76,7 +76,25 @@ $('.plus-btn').on('click', function(e) {
     $input.val(value);
 });
 
+$('.product-card__btn-add').on('click', function(e){
+    let productID = $(this).attr('data-id');
+    let productProperties = {};
 
+    
+    productProperties.productID = productID
+    productProperties.productTitle = $(this).attr('data-title')
+    productProperties.productPrice = $(this).attr('data-price')
+    if (localStorage.getItem(productID) === null) {
+        localStorage.setItem(productID,JSON.stringify(productProperties))
+    } else {
+        alert('Товар уже добавлен в корзину')
+    }
+
+
+    $('.cart__num').text(localStorage.length)
+})
+
+    $('.cart__num').text(localStorage.length)
 
 });
 

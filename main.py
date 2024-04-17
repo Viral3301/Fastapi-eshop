@@ -97,9 +97,9 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
 @app.get("/product/{category_id}/{product_id}" , response_model=List[Product],tags=['nav'])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):
     if category_id >2:
-        stmt = select(Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.id == product_id, Vehicles.category == category_id)
+        stmt = select(Vehicles.id,Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.id == product_id, Vehicles.category == category_id)
     else:
-        stmt = select(Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.id == product_id, Accessories.category == category_id)
+        stmt = select(Accessories.id,Accessories.title,Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.id == product_id, Accessories.category == category_id)
     content_raw = await session.execute(stmt)
     product = content_raw.all()
     if product == []:
