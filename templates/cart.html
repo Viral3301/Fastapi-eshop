@@ -6,58 +6,34 @@
         <div class="cart__top">
             <h1 class="title" style="border-bottom: 3px solid rgb(45 38 38); margin: 40px; padding: 20px;">Корзина</h1>
         </div>
-        <ul class="cart__product-list">
-            <li class="cart__product">
-                <div class="cart__content">
-                    <a href="" class="cart__content-delete">✕</a>
-                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
-                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
-                    <div class="quantity">
-                        <button class="plus-btn" type="button" name="button">
-                          <span style="color: #808080;">+</span>
-                        </button>
-                        <input type="text" name="name" value="1">
-                        <button class="minus-btn" type="button" name="button">
-                            <span style="color: #808080;">-</span>
-                        </button>
-                      </div>
-                      <span class="cart__content-price">2500₽</span>
-                </div>
-            </li>
-            <li class="cart__product">
-                <div class="cart__content">
-                    <a href="" class="cart__content-delete">✕</a>
-                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
-                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
-                    <div class="quantity">
-                        <button class="plus-btn" type="button" name="button">
-                          <span style="color: #808080;">+</span>
-                        </button>
-                        <input type="text" name="name" value="1">
-                        <button class="minus-btn" type="button" name="button">
-                            <span style="color: #808080;">-</span>
-                        </button>
-                      </div>
-                      <span class="cart__content-price">2500₽</span>
-                </div>
-            </li>
-            <li class="cart__product">
-                <div class="cart__content">
-                    <a href="" class="cart__content-delete">✕</a>
-                    <img src="{{ url_for('content_img', path='/placeholder.png') }}" alt="" class="cart__content-img">
-                    <a href="" class="cart__content-title">Гидроцикл BRP SeaDoo GTX 300hp LTD Liquid Metal</a>
-                    <div class="quantity">
-                        <button class="plus-btn" type="button" name="button">
-                          <span style="color: #808080;">+</span>
-                        </button>
-                        <input type="text" name="name" value="1">
-                        <button class="minus-btn" type="button" name="button">
-                            <span style="color: #808080;">-</span>
-                        </button>
-                      </div>
-                      <span class="cart__content-price">2500₽</span>
-                </div>
-            </li>
+        <ul id="prod_list" class="cart__product-list">
+            <script>
+                for (x in localStorage){
+                    let product = localStorage.getItem(x)
+                    let product_obj = JSON.parse(product)
+                    let product_html = 
+                        `<li class="cart__product">
+                            <div class="cart__content">
+                                <a href="" class="cart__content-delete">✕</a>
+                                <img src="${product_obj.productImage}" alt="" class="cart__content-img">
+                                <a href="" class="cart__content-title">${product_obj.productTitle}</a>
+                                <div class="quantity">
+                                    <button class="plus-btn" type="button" name="button">
+                                         <span style="color: #808080;">+</span>
+                                    </button>
+                                    <input type="text" name="name" value="1">
+                                    <button class="minus-btn" type="button" name="button">
+                                        <span style="color: #808080;">-</span>
+                                    </button>
+                                </div>
+                                <span class="cart__content-price">${product_obj.productPrice}₽</span>
+                            </div>
+                        </li>`
+
+                    prod_list.insertAdjacentHTML('afterbegin',product_html)
+                }
+            </script>
+
         </ul>
         <div class="cart__bottom">
             <div class="promocode">

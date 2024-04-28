@@ -1343,3 +1343,9 @@ body{
 .checkout__form{
     margin: 10px 0 0 15px;
 }
+
+.cart__content img{
+    width: 200px; 
+    height: 130px;
+    object-fit: contain;
+}

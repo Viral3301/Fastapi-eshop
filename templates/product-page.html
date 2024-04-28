@@ -56,7 +56,7 @@
                                     </ul>
                                     <a href="" class="product-card__more">Показать еще</a>
                                     <div class="product-card__btn">
-                                        <button class="product-card__btn-add" data-id="{{item.id}}">Купить</button>
+                                        <button class="product-card__btn-add" data-id="{{item.id}}" data-price="{{item.price}}" data-title="{{item.title}}" data-img="{{ url_for('content_img',path='/'+ item.image) }}">Купить</button>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                     </ul>
                                     <a href="" class="product-card__more">Показать еще</a>
                                     <div class="product-card__btn">
-                                        <button class="product-card__btn-add" data-id="{{item.id}}" data-price="{{item.price}}" data-title="{{item.title}}">Купить</button>
+                                        <button class="product-card__btn-add" data-id="{{item.id}}" data-price="{{item.price}}" data-title="{{item.title}}" data-img="{{ url_for('content_img',path='/'+ item.image) }}">Купить</button>
                                     </div>
                                 </div>
                             </div>

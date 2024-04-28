@@ -83,6 +83,7 @@ $('.product-card__btn-add').on('click', function(e){
     
     productProperties.productID = productID
     productProperties.productTitle = $(this).attr('data-title')
+    productProperties.productImage = $(this).attr('data-img')
     productProperties.productPrice = $(this).attr('data-price')
     if (localStorage.getItem(productID) === null) {
         localStorage.setItem(productID,JSON.stringify(productProperties))
