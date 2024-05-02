@@ -1219,6 +1219,8 @@ body{
 
 .cart__content-delete{
     margin-left: 35px;
+    cursor: pointer;
+    
 }
 
 .cart__content-price{
@@ -1333,6 +1335,11 @@ body{
     width: 100px;
 }
 
+.checkout__item-right-discount{
+    width: 100px;
+    
+}
+
 .checkout__summary{
     display: flex;
     justify-content: space-between;
@@ -1348,4 +1355,15 @@ body{
     width: 200px; 
     height: 130px;
     object-fit: contain;
+}
+
+.cart__content-title, .cart__content-price, .checkout__item-right, .checkout__item-right-discount{
+    font-weight: 700;
+    font-family: 'SFProDisplay-Medium', sans-serif;
+    letter-spacing: 1px;
+}
+
+.checkout__item-right::after , .cart__content-price::after{
+    content: '₽';
+    margin-left: 5px;
 }

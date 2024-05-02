@@ -7,33 +7,6 @@
             <h1 class="title" style="border-bottom: 3px solid rgb(45 38 38); margin: 40px; padding: 20px;">Корзина</h1>
         </div>
         <ul id="prod_list" class="cart__product-list">
-            <script>
-                for (x in localStorage){
-                    let product = localStorage.getItem(x)
-                    let product_obj = JSON.parse(product)
-                    let product_html = 
-                        `<li class="cart__product">
-                            <div class="cart__content">
-                                <a href="" class="cart__content-delete">✕</a>
-                                <img src="${product_obj.productImage}" alt="" class="cart__content-img">
-                                <a href="" class="cart__content-title">${product_obj.productTitle}</a>
-                                <div class="quantity">
-                                    <button class="plus-btn" type="button" name="button">
-                                         <span style="color: #808080;">+</span>
-                                    </button>
-                                    <input type="text" name="name" value="1">
-                                    <button class="minus-btn" type="button" name="button">
-                                        <span style="color: #808080;">-</span>
-                                    </button>
-                                </div>
-                                <span class="cart__content-price">${product_obj.productPrice}₽</span>
-                            </div>
-                        </li>`
-
-                    prod_list.insertAdjacentHTML('afterbegin',product_html)
-                }
-            </script>
-
         </ul>
         <div class="cart__bottom">
             <div class="promocode">
@@ -49,17 +22,17 @@
                     <ul class="checkout__item-list">
                         <li class="checkout__item">
                             <div class="checkout__item-left">Сумма</div>
-                            <div class="checkout__item-right">7500₽</div>
+                            <div id="price" class="checkout__item-right"></div>
                         </li>
                         <li class="checkout__item">
                             <div class="checkout__item-left">Скидка</div>
-                            <div class="checkout__item-right">5%</div>
+                            <div class="checkout__item-right-discount">0%</div>
                         </li>
                     </ul>
                     <ul>
                         <li class="checkout__summary">
                             <div class="checkout__item-left">Итого:</div>
-                            <div class="checkout__item-right">7125₽</div>
+                            <div class="checkout__item-right">7125</div>
                         </li>
                     </ul>
                     <form action="" class="checkout__form">
@@ -71,4 +44,37 @@
         </div>
     </div>
 </section>
+
+<script>
+    let total = 0
+    
+    let localstorage_keys = Object.values(localStorage)
+
+    for (x in localstorage_keys){
+        let product_obj = JSON.parse(localstorage_keys[x])
+        console.log(product_obj)
+        total += Number(product_obj.productPrice)
+        let product_html = 
+            `<li class="cart__product">
+                <div class="cart__content">
+                    <a id='${product_obj.productID}' class="cart__content-delete">✕</a>
+                    <img src="${product_obj.productImage}" alt="" class="cart__content-img">
+                    <a href="" class="cart__content-title">${product_obj.productTitle}</a>
+                    <div class="quantity">
+                        <button class="plus-btn" type="button" name="button">
+                             <span style="color: #808080;">+</span>
+                        </button>
+                        <input type="text" name="name" value="1">
+                        <button class="minus-btn" type="button" name="button">
+                            <span style="color: #808080;">-</span>
+                        </button>
+                    </div>
+                    <span class="cart__content-price">${product_obj.productPrice}</span>
+                </div>
+            </li>`
+
+        prod_list.insertAdjacentHTML('afterbegin',product_html)
+    }
+    document.getElementById('price').innerText = total
+</script>
 {% endblock content %}

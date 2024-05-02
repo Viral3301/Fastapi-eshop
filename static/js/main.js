@@ -44,7 +44,12 @@ $(function(){
 	let file = this.files[0];
 	$(this).next().html(file.name);
 });
-    
+
+$('.cart__content-delete').on('click', function(e){
+    localStorage.removeItem($(this).attr('id'))
+    location.reload()
+});
+
 $('.minus-btn').on('click', function(e) {
     e.preventDefault();
     var $this = $(this);
@@ -54,7 +59,7 @@ $('.minus-btn').on('click', function(e) {
     if (value > 1) {
         value = value - 1;} 
     else {
-        value = 0;
+        value = 1;
     }
  
   $input.val(value);
@@ -96,6 +101,7 @@ $('.product-card__btn-add').on('click', function(e){
 })
 
     $('.cart__num').text(localStorage.length)
+    
 
 });
 
