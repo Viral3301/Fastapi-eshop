@@ -77,8 +77,8 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
     swimsuits = raw_swimsuits.scalars().all()
     return templates.TemplateResponse('home.html',{'request':request,'backpacks': backpacks,'swimsuits':swimsuits})
 
-@app.get("/category/{category_id}/page={page_num}/",tags=['nav'])
-async def get_category(request: Request, category_id: int,page_num: int = 1,session: AsyncSession = Depends(get_async_session)):
+@app.get("/category/{category_id}/",tags=['nav'])
+async def get_category(request: Request, category_id: int,page: int = 1,session: AsyncSession = Depends(get_async_session)):
 
     if category_id >2:
         stmt = select(Vehicles.id,Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.category == category_id)
@@ -87,12 +87,13 @@ async def get_category(request: Request, category_id: int,page_num: int = 1,sess
     content_raw = await session.execute(stmt)
     data = content_raw.all()
 
-    start,end,page_num,pages_total = pagination(data,page_num)
+    
+    start,end,page,pages_total = pagination(data,page)
 
     raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
     category_name = raw_category_name.scalars().all()
 
-    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page_num,"category_name":category_name},)
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,"category_name":category_name},)
 
 @app.get("/product/{category_id}/{product_id}" , response_model=List[Product],tags=['nav'])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):

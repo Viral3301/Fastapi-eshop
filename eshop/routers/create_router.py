@@ -41,13 +41,12 @@ async def Create_vehicle(request: Request,title: str,price: int,manufacturer: st
 
 
 
-def pagination(data,page_num):
+def pagination(data,page):
     data_length = len(data)
     if data_length % 12 == 0:
         pages_total = data_length // 12
     else:
         pages_total = data_length // 12 + 1 
-    start = (page_num - 1) * 12
+    start = (page - 1) * 12
     end = start + 12
-
-    return start,end,page_num,pages_total
+    return start,end,page,pages_total

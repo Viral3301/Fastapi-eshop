@@ -102,6 +102,17 @@ $('.product-card__btn-add').on('click', function(e){
 
     $('.cart__num').text(localStorage.length)
     
+$('.pagination-list_a').on('click', function(e){
+    let url = new URL(window.location.href)
+    let search_params = url.searchParams
+    url.search = search_params.toString()
+    let btn_id = $(this).attr('id')
+    search_params.set('page', btn_id)
+
+    let new_url = url.toString()
+
+    window.location.href = new_url
+})
 
 });
 

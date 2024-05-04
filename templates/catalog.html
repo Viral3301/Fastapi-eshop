@@ -99,7 +99,7 @@
                     <div class="pagination">
                         <ul class="pagination-list">
                             {% for pagination in range(1,pages_total) %}
-                                <li class="pagination-list__item active"><a href="page={{pagination}}">{{pagination}}</a></li>
+                                <li class="pagination-list__item active"><button class="pagination-list_a" id="{{pagination}}">{{pagination}}</button></li>
                             {% endfor %}
                         </ul>
                     </div>
