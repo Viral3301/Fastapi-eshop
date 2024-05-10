@@ -12,9 +12,11 @@ from sqlalchemy import select,update
 from fastapi_users import fastapi_users,FastAPIUsers
 from eshop.auth.auth import auth_backend
 from eshop.auth.manager import get_user_manager
-from eshop.schemas import UserRead,UserCreate,Operation,Product
+from eshop.schemas import UserRead,UserCreate
 from sqladmin import Admin, ModelView
-from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
+import pandas as pd
+
+# from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
 from eshop.routers.search_router import search_router
 
@@ -30,10 +32,10 @@ class UserAdmin(ModelView, model=User):
     column_list = [User.id, User.username]
 
 
-admin.add_view(UserAdmin)
-admin.add_view(VehicleAdmin)
-admin.add_view(AccesoryAdmin)
-admin.add_view(CategoryAdmin)
+# admin.add_view(UserAdmin)
+# admin.add_view(VehicleAdmin)
+# admin.add_view(AccesoryAdmin)
+# admin.add_view(CategoryAdmin)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -71,23 +73,18 @@ async def favicon():
 
 @app.get("/",tags=['nav'])
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
-    raw_backpacks = await session.execute(select(Accessories).where(Accessories.category == 1).order_by(Accessories.id))
-    raw_swimsuits = await session.execute(select(Accessories).where(Accessories.category == 2).order_by(Accessories.id))
-    backpacks = raw_backpacks.scalars().all()
-    swimsuits = raw_swimsuits.scalars().all()
-    return templates.TemplateResponse('home.html',{'request':request,'backpacks': backpacks,'swimsuits':swimsuits})
+    Accesories = await session.execute(select(Products).where(Products.category.in_([1,2])).order_by(Products.id))
+    Accesories_scalars = Accesories.scalars().all()
+
+    return templates.TemplateResponse('home.html',{'request':request,'accessories': Accesories_scalars})
+
 
 @app.get("/category/{category_id}/",tags=['nav'])
 async def get_category(request: Request, category_id: int,page: int = 1,session: AsyncSession = Depends(get_async_session)):
 
-    if category_id >2:
-        stmt = select(Vehicles.id,Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.category == category_id)
-    else:
-        stmt = select(Accessories.id,Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.category == category_id)
-    content_raw = await session.execute(stmt)
-    data = content_raw.all()
+    content_raw = await session.execute(select(Products).where(Products.category == category_id))
+    data = content_raw.scalars().all()
 
-    
     start,end,page,pages_total = pagination(data,page)
 
     raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
@@ -95,18 +92,18 @@ async def get_category(request: Request, category_id: int,page: int = 1,session:
 
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,"category_name":category_name},)
 
-@app.get("/product/{category_id}/{product_id}" , response_model=List[Product],tags=['nav'])
+@app.get("/product/{category_id}/{product_id}" ,tags=['nav'])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):
-    if category_id >2:
-        stmt = select(Vehicles.id,Vehicles.title,Vehicles.category,Vehicles.image,Vehicles.price,Vehicles.product_code,Vehicles.seats,Vehicles.engine_type,Vehicles.manufacturer,Vehicles.engine,Vehicles.year,Vehicles.rating).where(Vehicles.id == product_id, Vehicles.category == category_id)
-    else:
-        stmt = select(Accessories.id,Accessories.title,Accessories.title,Accessories.category,Accessories.image,Accessories.price,Accessories.product_code,Accessories.guarantee,Accessories.material,Accessories.color,Accessories.company,Accessories.manufacturer,Accessories.rating).where(Accessories.id == product_id, Accessories.category == category_id)
+
+    stmt = select(Products.id,Products.title,Products.image,Products.product_code,Products.price,ProductAttributes.title,AttributeValue.value).join(ProductAttributes, ProductAttributes.id == AttributeValue.attribute_id).join(Products).where(Products.id == product_id)
     content_raw = await session.execute(stmt)
-    product = content_raw.all()
-    if product == []:
+
+    df = pd.DataFrame(content_raw)
+    
+    if df.empty:
         raise HTTPException(status_code=404)
 
-    return templates.TemplateResponse('product-page.html',{'request':request,'product':product})
+    return templates.TemplateResponse('product-page.html',{'request':request,'product':df.to_dict()})
 
 @app.get("/login",tags=['nav'])
 async def login(request: Request,session: AsyncSession = Depends(get_async_session)):

@@ -146,23 +146,25 @@
                     <div class="tabs-container products__container">
                         <div id="product-tab-1" class="tabs-content products__content tabs-content--active">
                             <div class="product-slider">
-                                {% for item in backpacks %}
-                                    <div class="product-slider__item">
-                                        <div class="product-item__wrapper">
-                                            <button class="product-item__favorite"></button>
-                                            <button class="product-item__cart">
-                                                <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
-                                            </button>
-                                            <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
-                                            <a class="product-item" href="/product/{{item.category}}/{{item.id}}">
-                                                <p class="product-item__hover-text">Посмотреть товар</p>
-                                                <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
-                                                <h4 class="products-item__title">{{item.title}}</h4>
-                                                <p class="price product-item__price">{{ item.price }}₽</p>
-                                                <p class="product-item__notify">Нет в наличии</p>
-                                            </a>
+                                {% for item in accessories %}
+                                    {% if item.category == 1 %}
+                                        <div class="product-slider__item">
+                                            <div class="product-item__wrapper">
+                                                <button class="product-item__favorite"></button>
+                                                <button class="product-item__cart">
+                                                    <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
+                                                </button>
+                                                <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
+                                                <a class="product-item" href="/product/{{item.category}}/{{item.id}}">
+                                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                                    <h4 class="products-item__title">{{item.title}}</h4>
+                                                    <p class="price product-item__price">{{ item.price }}₽</p>
+                                                    <p class="product-item__notify">Нет в наличии</p>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </div>
@@ -192,23 +194,25 @@
                     <div class="tabs-container products__container">
                         <div id="popular-tab-1" class="tabs-content products__content tabs-content--active">
                             <div class="product-slider">
-                                {% for suit in swimsuits %}
-                                    <div class="product-slider__item">
-                                        <div class="product-item__wrapper">
-                                            <button class="product-item__favorite"></button>
-                                            <button class="product-item__cart">
-                                                <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
-                                            </button>
-                                            <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
-                                            <a class="product-item" href="/product/{{suit.category}}/{{suit.id}}">
-                                                <p class="product-item__hover-text">Посмотреть товар</p>
-                                                <img src="{{ url_for('content_img', path='/' + suit.image) }}" alt="" class="product-item__img">
-                                                <h4 class="products-item__title">{{ suit.title }}</h4>
-                                                <p class="price product-item__price">{{ suit.price }}₽</p>
-                                                <p class="product-item__notify">Нет в наличии</p>
-                                            </a>
+                                {% for suit in accessories %}
+                                    {% if suit.category == 2 %}
+                                        <div class="product-slider__item">
+                                            <div class="product-item__wrapper">
+                                                <button class="product-item__favorite"></button>
+                                                <button class="product-item__cart">
+                                                    <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
+                                                </button>
+                                                <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
+                                                <a class="product-item" href="/product/{{suit.category}}/{{suit.id}}">
+                                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                                    <img src="{{ url_for('content_img', path='/' + suit.image) }}" alt="" class="product-item__img">
+                                                    <h4 class="products-item__title">{{ suit.title }}</h4>
+                                                    <p class="price product-item__price">{{ suit.price }}₽</p>
+                                                    <p class="product-item__notify">Нет в наличии</p>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </div>

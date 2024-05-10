@@ -47,29 +47,29 @@ class UserCreate(schemas.BaseUserCreate):
     ):
         return cls(username=username,email=email,password=password,is_active=is_active,is_superuser=is_superuser,is_verified=is_verified)
     
-class Operation(BaseModel):
-  model_config: ConfigDict(from_attributes=True)
+# class Operation(BaseModel):
+#   model_config: ConfigDict(from_attributes=True)
 
-  id: int
-  image: str
-  title: str
-  image: str
-  price: int
-  category: int
+#   id: int
+#   image: str
+#   title: str
+#   image: str
+#   price: int
+#   category: int
 
 
-class Product(BaseModel):
-  model_config: ConfigDict(from_attributes=True)
+# class Product(BaseModel):
+#   model_config: ConfigDict(from_attributes=True)
 
-  title: str
-  image: str
-  price: int
-  product_code: int
-  material: Optional[str] = None
-  color: Optional[str] = None
-  guarantee: Optional[int] = None
-  company: Optional[str] = None
-  seats: Optional[int] = None
-  engine: Optional[int] = None
-  engine_type: Optional[str] = None
-  year: Optional[int] = None
+#   title: str
+#   image: str
+#   price: int
+#   product_code: int
+#   material: Optional[str] = None
+#   color: Optional[str] = None
+#   guarantee: Optional[int] = None
+#   company: Optional[str] = None
+#   seats: Optional[int] = None
+#   engine: Optional[int] = None
+#   engine_type: Optional[str] = None
+#   year: Optional[int] = None
