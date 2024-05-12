@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.templating import Jinja2Templates
 from database import get_async_session
 from eshop.routers.create_router import pagination
-from sqlalchemy import select
+from sqlalchemy import select, and_
+from eshop.models import Products,AttributeValue
 from database import get_async_session,AsyncSession
 
 
@@ -11,50 +12,45 @@ search_router = APIRouter(prefix="/search",tags=["search"])
 
 templates = Jinja2Templates(directory="templates")
 
-# @search_router.post("/search_by_name" , response_model=List[Operation])
-# async def search_by_name(request: Request, name: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-#     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.title.like(f'{name.capitalize()}%'))
-#     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.title.like(f'{name.capitalize()}%'))
-#     query = stmt_1.union(stmt_2)
-#     content_raw = await session.execute(query)
-#     data = content_raw.all()
+@search_router.post("/search_by_name")
+async def search_by_name(request: Request, name: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    query = select(Products).where(Products.title.like(f'{name.capitalize()}%'))
 
-#     start,end,page_num,pages_total = pagination(data,page_num)
+    content_raw = await session.execute(query)
+    data = content_raw.scalars().all()
 
-#     if data ==[]:
-#         raise HTTPException(status_code=404)
+    start,end,page_num,pages_total = pagination(data,page_num)
 
-#     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+    if data ==[]:
+        raise HTTPException(status_code=404)
 
-# @search_router.post("/search_by_code" , response_model=List[Operation])
-# async def search_by_id(request: Request, code: Annotated[int,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
-#     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.product_code == code)
-#     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.product_code == code)
-#     query = stmt_1.union(stmt_2)
-#     content_raw = await session.execute(query)
-#     data = content_raw.all()
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
 
-#     start,end,page_num,pages_total = pagination(data,page_num)
+@search_router.post("/search_by_code")
+async def search_by_id(request: Request, code: Annotated[int,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    query = select(Products).where(Products.product_code == code)
+    content_raw = await session.execute(query)
+    data = content_raw.scalars().all()
 
-#     if data ==[]:
-#         raise HTTPException(status_code=404)
+    start,end,page_num,pages_total = pagination(data,page_num)
 
-#     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+    if data ==[]:
+        raise HTTPException(status_code=404)
 
-# @search_router.post("/search_by_manufacturer", response_model=List[Operation])
-# async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+
+@search_router.post("/search_by_manufacturer")
+async def search_by_manufacturer(request: Request, manufacturer: Annotated[str,Form()],page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
     
-#     stmt_1 = select(Accessories.id,Accessories.title,Accessories.image,Accessories.price,Accessories.category).where(Accessories.manufacturer == manufacturer.capitalize())
-#     stmt_2 = select(Vehicles.id,Vehicles.title,Vehicles.image,Vehicles.price,Vehicles.category).where(Vehicles.manufacturer == manufacturer.capitalize())
-#     query = stmt_1.union(stmt_2)
-#     content_raw = await session.execute(query)
-#     data = content_raw.all()
+    query = select(Products).join(AttributeValue, AttributeValue.product_id == Products.id ).where(and_(AttributeValue.attribute_id == 1 ,AttributeValue.value == manufacturer.capitalize()))
+    content_raw = await session.execute(query)
+    data = content_raw.scalars().all()
 
 
-#     start,end,page_num,pages_total = pagination(data,page_num)
+    start,end,page_num,pages_total = pagination(data,page_num)
 
-#     if data ==[]:
-#         raise HTTPException(status_code=404)
+    if data ==[]:
+        raise HTTPException(status_code=404)
 
 
-#     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"page_num": page_num},)
