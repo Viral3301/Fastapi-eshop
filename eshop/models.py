@@ -4,7 +4,7 @@ from sqlalchemy.orm import DeclarativeBase
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Column, DateTime,Integer,String,Boolean,ForeignKey,Float, func,Date
 from sqlalchemy.orm import mapped_column,Mapped,relationship
-
+from datetime import datetime
 
 
 
@@ -55,3 +55,15 @@ class Orders(Base):
     id: Mapped[intpk]
     user_id: Mapped[int]
     product_id: Mapped[int] = mapped_column(ForeignKey("Products.id" , ondelete="CASCADE"))
+
+
+class User(SQLAlchemyBaseUserTable[int], Base):
+    id = Column("id", Integer,autoincrement=True, primary_key=True)
+    email = Column("email", String, nullable=False)
+    username = Column("username", String, nullable=False)
+    registered_at = Column("registered_at",Date, default=datetime.now())
+    hashed_password = Column("hashed_password", String, nullable=False)
+    image = Column("image",String,default='default_pfp.png')
+    is_active = Column("is_active", Boolean, default=True, nullable=False)
+    is_superuser = Column("is_superuser", Boolean, default=False, nullable=False)
+    is_verified = Column("is_verified", Boolean, default=False, nullable=False)

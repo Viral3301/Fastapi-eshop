@@ -7,6 +7,7 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime,Integer,String,Boolean,ForeignKey,Float, func,Date
 from config import DB_HOST, DB_NAME, DB_PASS,DB_USER
 from eshop.models import Base
+from eshop.models import User
 
 SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
@@ -27,15 +28,3 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
-
-
-class User(SQLAlchemyBaseUserTable[int], Base):
-    id = Column("id", Integer, primary_key=True)
-    email = Column("email", String, nullable=False)
-    username = Column("username", String, nullable=False)
-    registered_at = Column("registered_at",Date, default=datetime.now())
-    hashed_password = Column("hashed_password", String, nullable=False)
-    image = Column("image",String,default='default_pfp.png')
-    is_active = Column("is_active", Boolean, default=True, nullable=False)
-    is_superuser = Column("is_superuser", Boolean, default=False, nullable=False)
-    is_verified = Column("is_verified", Boolean, default=False, nullable=False)
