@@ -114,5 +114,9 @@ $('.pagination-list_a').on('click', function(e){
     window.location.href = new_url
 })
 
+$('.save-btn').on('click', function(e){
+    window.location.href('http://127.0.0.1:8000/')
+})
+
 });
 
