@@ -11,15 +11,10 @@ services:
       - "5432:5432"
     networks:
       - backend
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
+
 
     volumes:
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
-      - data:/var/lib/postgresql/data
 
   app:
     build: 
@@ -32,8 +27,7 @@ services:
     networks:
       - backend
     depends_on:
-      db:
-        condition: service_healthy
+      - "db"
 
 networks:
   backend:
@@ -41,4 +35,3 @@ networks:
 
 volumes:
     dump:
-    data:

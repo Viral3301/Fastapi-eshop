@@ -15,6 +15,8 @@ from eshop.auth.manager import get_user_manager
 from eshop.schemas import UserRead,UserCreate
 from sqladmin import Admin, ModelView
 import pandas as pd
+from admin_models import *
+
 
 # from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
@@ -32,10 +34,10 @@ class UserAdmin(ModelView, model=User):
     column_list = [User.id, User.username]
 
 
-# admin.add_view(UserAdmin)
-# admin.add_view(VehicleAdmin)
-# admin.add_view(AccesoryAdmin)
-# admin.add_view(CategoryAdmin)
+admin.add_view(UserAdmin)
+admin.add_view(ProductsAdmin)
+admin.add_view(AttributesAdmin)
+admin.add_view(ValuesAdmin)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
