@@ -1,4 +1,4 @@
-from eshop.models import Accessories
+
 from conftest import client, async_test_session_maker
 from main import app
 import pytest

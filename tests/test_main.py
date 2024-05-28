@@ -1,36 +1,32 @@
 from httpx import AsyncClient
 import os
+from eshop.models import ProductAttributes
 
 async def test_create_category(ac: AsyncClient):
-    response = await ac.post("create/category?name=test_accesory")
+    response = await ac.post("create/category?name=test_category")
 
     assert response.status_code == 200
     assert response.json()["response"] == "good"
 
-async def test_create_accessory(ac: AsyncClient):
+async def test_create_product(ac: AsyncClient):
     file = {'image': open(os.path.abspath("content_img/test_img.png"),"rb")}
-    response = await ac.post("create/accessory?title=Test_accessory&price=123&manufacturer=Test1&amount_in_stock=1&sale=false&category=1&material=кордура&guarantee=12&color=красный&company=Grizzly&rating=3",files=file)
+    response = await ac.post("create/accessory?title=Test_product&category=1&price=123&product_code=111111&sale=false",files=file)
 
     assert response.status_code == 200
     assert response.json()["response"] == "good"
 
-async def test_create_vehicle(ac: AsyncClient):
-    await ac.post("create/category?name=test_vehicle")
-    file = {'image': open(os.path.abspath("content_img/test_img.png"),"rb")}
-    response = await ac.post("create/vehicle?title=Test_vehicle&price=123&manufacturer=Test2&seats=2&engine=123&engine_type=123&year=123&amount_in_stock=123&sale=true&category=2",files=file)
+async def test_create_attribute(ac: AsyncClient):
+    response = await ac.post("create/attribute?title=manufacturer")
 
     assert response.status_code == 200
     assert response.json()["response"] == "good"
 
-async def test_get_product_page(ac: AsyncClient):
-    response = await ac.get("/product/1/1")
+async def test_create_value(ac: AsyncClient):
+    response = await ac.post("create/value?product_id=1&attribute_id=1&value=Китай")
 
     assert response.status_code == 200
+    assert response.json()["response"] == "good"
 
-async def test_get_product_page_failed(ac: AsyncClient):
-    response = await ac.get("/product/1234/1234")
-
-    assert response.status_code == 404
 
 async def test_search_by_name(ac: AsyncClient):
     response = await ac.post("search/search_by_name?page_num=1", data={"name": 'te'})
@@ -43,6 +39,7 @@ async def test_search_by_code(ac: AsyncClient):
     assert response.status_code == 200
 
 async def test_search_by_manufacturer(ac: AsyncClient):
-    response = await ac.post("search/search_by_manufacturer?page_num=1", data={'manufacturer': 'test2'})
+    response = await ac.post("search/search_by_manufacturer?page_num=1", data={'manufacturer': 'Китай'})
 
     assert response.status_code == 200
+

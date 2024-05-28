@@ -97,7 +97,7 @@ async def get_category(request: Request, category_id: int,page: int = 1,session:
 @app.get("/product/{category_id}/{product_id}" ,tags=['nav'])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):
 
-    stmt = select(Products.id,Products.title,Products.image,Products.product_code,Products.price,ProductAttributes.title,AttributeValue.value).join(ProductAttributes, ProductAttributes.id == AttributeValue.attribute_id).join(Products).where(Products.id == product_id)
+    stmt = select(Products.id,Products.title,Products.image,Products.product_code,Products.price,ProductAttributes.title,AttributeValue.value).join(ProductAttributes, ProductAttributes.id == AttributeValue.attribute_id).join(Products).where(Products.id == product_id).order_by(ProductAttributes.id)
     content_raw = await session.execute(stmt)
 
     df = pd.DataFrame(content_raw)

@@ -4,26 +4,40 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi import FastAPI,Request
 
-from eshop.models import Category
+from eshop.models import Products, Category ,ProductAttributes, AttributeValue
 from database import get_async_session
 
 create_router = APIRouter(prefix='/create',tags=["create"])
 
-# @create_router.post("/accessory")
-# async def Create_acessory(request: Request,title: str,price: int,manufacturer: str ,amount_in_stock: int,sale: bool,category:int,material: str,guarantee: int,color: str,company:str,rating: float,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
-#     with open (f'content_img/{image.filename}',"wb") as buffer:
-#         shutil.copyfileobj(image.file,buffer)
-#     new_accesory = Accessories(title=title,image=image.filename,price=price,manufacturer=manufacturer,amount_in_stock=amount_in_stock,sale=sale,category=category,rating = rating,material=material,guarantee=guarantee,color=color,company=company)
-#     session.add(new_accesory)
-#     await session.commit()
-#     return {'response': "good"}
+@create_router.post("/accessory")
+async def Create_product(request: Request,title: str,category: int,product_code: int ,price: int,sale: bool,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
+    with open (f'content_img/{image.filename}',"wb") as buffer:
+        shutil.copyfileobj(image.file,buffer)
+    new_product = Products(title=title,image=image.filename,price=price,category=category,product_code=product_code,sale=sale)
+    session.add(new_product)
+    await session.commit()
+    return {'response': "good"}
 
-# @create_router.post("/category")
-# async def Create_category(request: Request,name: str,session: AsyncSession = Depends(get_async_session)):
-#     new_category = Category(name=name)
-#     session.add(new_category)
-#     await session.commit()
-#     return {'response': "good"}
+@create_router.post("/category")
+async def Create_category(request: Request,name: str,session: AsyncSession = Depends(get_async_session)):
+    new_category = Category(name=name)
+    session.add(new_category)
+    await session.commit()
+    return {'response': "good"}
+
+@create_router.post("/attribute")
+async def Create_product_attribute(request: Request,title: str,session: AsyncSession = Depends(get_async_session)):
+    new_attribute = ProductAttributes(title=title)
+    session.add(new_attribute)
+    await session.commit()
+    return {'response': "good"}
+
+@create_router.post("/value")
+async def Create_attribute_value(request: Request,product_id: int,attribute_id: int,value: str,session: AsyncSession = Depends(get_async_session)):
+    new_attribute_value = AttributeValue(product_id=product_id,attribute_id=attribute_id,value=value)
+    session.add(new_attribute_value)
+    await session.commit()
+    return {'response': "good"}
 
 # @create_router.post("/vehicle")
 # async def Create_vehicle(request: Request,title: str,price: int,manufacturer: str ,seats:int,engine:int,engine_type: str,year:int,amount_in_stock: int,sale: bool,category:int,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
