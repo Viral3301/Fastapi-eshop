@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional
-from fastapi import Form
+from fastapi import File, Form, UploadFile
 from fastapi_users import schemas
 from pydantic import BaseModel,ConfigDict
 
@@ -47,29 +47,30 @@ class UserCreate(schemas.BaseUserCreate):
     ):
         return cls(username=username,email=email,password=password,is_active=is_active,is_superuser=is_superuser,is_verified=is_verified)
     
-# class Operation(BaseModel):
-#   model_config: ConfigDict(from_attributes=True)
+class Create_product(BaseModel):
+    title : str
+    category: int
+    product_code: int
+    price: int
+    sale: bool
 
-#   id: int
-#   image: str
-#   title: str
-#   image: str
-#   price: int
-#   category: int
+    @classmethod
+    def as_form(
+        cls,
+        title : str = Form(...),
+        category: int = Form(...),
+        product_code: int = Form(...),
+        price: int = Form(...),
+        sale: bool = Form(...),
+    ):
+        return cls(title=title,category=category,product_code=product_code,price=price,sale=sale)
+    
 
-
-# class Product(BaseModel):
-#   model_config: ConfigDict(from_attributes=True)
-
-#   title: str
-#   image: str
-#   price: int
-#   product_code: int
-#   material: Optional[str] = None
-#   color: Optional[str] = None
-#   guarantee: Optional[int] = None
-#   company: Optional[str] = None
-#   seats: Optional[int] = None
-#   engine: Optional[int] = None
-#   engine_type: Optional[str] = None
-#   year: Optional[int] = None
+class ProductDTO(BaseModel):
+    id : int
+    title: str
+    category: int
+    product_code: int
+    image: str
+    price: int
+    sale: bool

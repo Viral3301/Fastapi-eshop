@@ -12,20 +12,26 @@ from sqlalchemy import select,update
 from fastapi_users import fastapi_users,FastAPIUsers
 from eshop.auth.auth import auth_backend
 from eshop.auth.manager import get_user_manager
-from eshop.schemas import UserRead,UserCreate
+from eshop.schemas import UserRead,UserCreate,ProductDTO
 from sqladmin import Admin, ModelView
 import pandas as pd
 from admin_models import *
-
+from redis import asyncio as aioredis
+import json
+from fastapi.encoders import jsonable_encoder
+from pydantic.json import pydantic_encoder
 
 # from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
 from eshop.routers.search_router import search_router
 
+async def lifespan(app):
+    global redis
+    redis = await aioredis.from_url('redis://localhost')
+    yield
+    await redis.close()
 
-
-
-app = FastAPI(title='Drive-moto')
+app = FastAPI(title='Drive-moto',lifespan=lifespan)
 
 admin = Admin(app, engine)
 
@@ -69,21 +75,33 @@ current_user = fastapi_users.current_user()
 favicon_path = 'static/img/favicon.svg'
 
 
+
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
     return FileResponse(favicon_path)
 
 @app.get("/",tags=['nav'])
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
-    Accesories = await session.execute(select(Products).where(Products.category.in_([1,2])).order_by(Products.id))
-    Accesories_scalars = Accesories.scalars().all()
-
-    return templates.TemplateResponse('home.html',{'request':request,'accessories': Accesories_scalars})
+    
+    cache = await redis.get('accessories')
+    
+    if cache is not None:
+        print('cache')
+        return templates.TemplateResponse('home.html',{'request':request,'accessories': json.loads(cache)})
+    else:
+        Accessories = await session.execute(select(Products).where(Products.category.in_([1,2])).order_by(Products.id))
+        Accessories_scalars = Accessories.scalars().all()
+        resultDTO = [ProductDTO.model_validate(row, from_attributes=True) for row in Accessories_scalars]
+        print('not_cache')
+        await redis.set('accessories',json.dumps(resultDTO,default=pydantic_encoder),ex=120)
+        return templates.TemplateResponse('home.html',{'request':request,'accessories': resultDTO})
 
 
 @app.get("/category/{category_id}/",tags=['nav'])
 async def get_category(request: Request, category_id: int,page: int = 1,session: AsyncSession = Depends(get_async_session)):
+    
 
+    
     content_raw = await session.execute(select(Products).where(Products.category == category_id))
     data = content_raw.scalars().all()
 
@@ -93,6 +111,7 @@ async def get_category(request: Request, category_id: int,page: int = 1,session:
     category_name = raw_category_name.scalars().all()
 
     return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,"category_name":category_name},)
+
 
 @app.get("/product/{category_id}/{product_id}" ,tags=['nav'])
 async def product_detail(request: Request,category_id : int,product_id: int,session: AsyncSession = Depends(get_async_session)):

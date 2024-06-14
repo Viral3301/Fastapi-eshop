@@ -5,7 +5,7 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Column, DateTime,Integer,String,Boolean,ForeignKey,Float, func,Date
 from sqlalchemy.orm import mapped_column,Mapped,relationship
 from datetime import datetime
-
+from sqlalchemy_serializer import SerializerMixin
 
 
 class Base(DeclarativeBase):

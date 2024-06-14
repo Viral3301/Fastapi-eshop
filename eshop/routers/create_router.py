@@ -5,15 +5,16 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi import FastAPI,Request
 
 from eshop.models import Products, Category ,ProductAttributes, AttributeValue
+from eshop.schemas import Create_product
 from database import get_async_session
 
 create_router = APIRouter(prefix='/create',tags=["create"])
 
-@create_router.post("/accessory")
-async def Create_product(request: Request,title: str,category: int,product_code: int ,price: int,sale: bool,image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
+@create_router.post("/product")
+async def Create_product(request: Request,product: Create_product = Depends(Create_product.as_form),image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
     with open (f'content_img/{image.filename}',"wb") as buffer:
         shutil.copyfileobj(image.file,buffer)
-    new_product = Products(title=title,image=image.filename,price=price,category=category,product_code=product_code,sale=sale)
+    new_product = Products(title=product.title,image=image.filename,price=product.price,category=product.category,product_code=product.product_code,sale=product.sale)
     session.add(new_product)
     await session.commit()
     return {'response': "good"}
