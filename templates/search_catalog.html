@@ -1,0 +1,67 @@
+{% extends 'base1.html' %}
+
+
+{% block content %}
+
+    <section class="catalog">
+        <div class="container">
+            {% for category in category_name %}
+                <h2 class="catalog__title">{{category.name}}</h2>
+            {% endfor %}
+            
+            <div class="catalog__inner">
+                <aside class="catalog__inner-aside aside-filter">
+                    <div class="tabs-wrapper">
+                        <div class="tabs aside-filter__tabs">
+                        </div>
+                        <div class="tabs-container">
+                            <div class="tabs-content aside-filter__tabs-content tabs-content--active"></div>
+
+            
+
+                            <div class="tabs-content aside-filter__tabs-content">content-2</div>
+                        </div>
+                    </div>
+                </aside>
+                <div class="catalog__inner-list">
+                    {% for item in data %}
+                        <div class="product-item__wrapper ">
+                            <button class="product-item__favorite"></button>
+                            
+                            <a href="#" class="product-item__notify-link"><span> Сообщить о поступлении</span></a>
+                            {% if item.sale == true %}
+                                <a class="product-item product-item--sale" href="/product/{{item.category}}/{{item.id}}">
+                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <h4 class="products-item__title">{{ item.title }}</h4>
+                                    <p class="price product-item__price">{{ item.price }}₽</p>
+                                    <p class="product-item__notify">Нет в наличии</p>
+                                </a>
+                            {% else %}
+                                <a class="product-item product-item" href="/product/{{item.category}}/{{item.id}}">
+                                    <p class="product-item__hover-text">Посмотреть товар</p>
+                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <h4 class="products-item__title">{{ item.title }}</h4>
+                                    <p class="price product-item__price">{{ item.price }}₽  </p>
+                                    <p class="product-item__notify">Нет в наличии</p>
+                                    <button class="product-item__cart">
+                                        <img src="{{ url_for('static',path='img/cart-white.svg') }}" alt="">
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <!-- <div class="pagination">
+                        <ul class="pagination-list">
+                            {% for pagination in range(1,pages_total) %}
+                                <li class="pagination-list__item active"><button class="pagination-list_a_catalog" data-code="{{code}}" data-search_type="{{search_type}}" id="{{pagination}}">{{pagination}}</button></li>
+                            {% endfor %}
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+{% endblock content %}
+

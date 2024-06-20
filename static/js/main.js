@@ -21,8 +21,8 @@ $(function(){
     $('.product-slider').slick({
         slidesToShow: 4,
         slidesToScroll: 1,
-        prevArrow:'<button class="product-slider__slider-btn product-slider__slider-btnprev"><img src="http://127.0.0.1:8000/static/img/arrow-black-left.svg" alt=""></button>',
-        nextArrow:'<button class="product-slider__slider-btn product-slider__slider-btnnext"><img src="http://127.0.0.1:8000/static/img/arrow-black-right.svg" alt=""></button>'
+        prevArrow:'<button class="product-slider__slider-btn product-slider__slider-btnprev"><img src="http://sinenkiy-fastapi-eshop.onrender.com/static/img/arrow-black-left.svg" alt=""></button>',
+        nextArrow:'<button class="product-slider__slider-btn product-slider__slider-btnnext"><img src="http://sinenkiy-fastapi-eshop.onrender.com/static/img/arrow-black-right.svg" alt=""></button>'
     });
 
     $('.filter-style').styler();
@@ -115,7 +115,7 @@ $('.pagination-list_a').on('click', function(e){
 })
 
 $('.save-btn').on('click', function(e){
-    window.location.href('http://127.0.0.1:8000/')
+    window.location.href('http://sinenkiy-fastapi-eshop.onrender.com/')
 })
 
 $('.open-popup').click(function(e) {
@@ -128,6 +128,8 @@ $('.close-popup').click(function() {
     $('.popup-bg').fadeOut(800);
     $('html').removeClass('no-scroll');
 });
+
+
 
 });
 

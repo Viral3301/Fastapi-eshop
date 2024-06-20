@@ -10,7 +10,7 @@ from config import DB_HOST, DB_NAME, DB_PASS,DB_USER
 
 from eshop.models import Base
 
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
+DATABASE_URL = f"postgresql://postgresuser:vnuY3NEv3DNY85GEmMHWj3RsWoXV9Gis@dpg-cppovj5ds78s73ecd4m0-a.frankfurt-postgres.render.com/fastapi_eshop_db"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

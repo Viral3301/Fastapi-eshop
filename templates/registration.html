@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <link rel="stylesheet" href="{{ url_for('static',path='css/login.css') }}">
     <title>Registration</title>
 </head>
@@ -35,7 +36,7 @@
         let data = Object.fromEntries(formData);
         let jsonData = JSON.stringify(data);
 
-        fetch('http://127.0.0.1:8000/auth/register', {
+        fetch('http://sinenkiy-fastapi-eshop.onrender.com/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json'
@@ -43,7 +44,7 @@
             body: jsonData
         }).then(res => {
             if (res.status == 201) {
-                window.location.replace("http://127.0.0.1:8000/profile")
+                window.location.replace("http://sinenkiy-fastapi-eshop.onrender.com/profile")
                 alert("Вы успешно зарегестрированы")
             }
             else

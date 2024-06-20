@@ -5,7 +5,7 @@ from fastapi_users.authentication import JWTStrategy
 
 class CookieRedirectTransport(CookieTransport):
     async def get_login_response(self, token: str) -> Any:
-        response = RedirectResponse("http://127.0.0.1:8000//profile", 302)
+        response = RedirectResponse("http://127.0.0.1:8000/profile", 302)
         self._set_login_cookie(response, token)
         return response
 

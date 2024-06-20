@@ -32,7 +32,7 @@
                     <ul>
                         <li class="checkout__summary">
                             <div class="checkout__item-left">Итого:</div>
-                            <div class="checkout__item-right">...</div>
+                            <div id="price_total" class="checkout__item-right">...</div>
                         </li>
                     </ul>
                 </div>
@@ -45,7 +45,7 @@
 
     <div class="popup-bg">
         <div class="popup">
-            <img class="close-popup" src="images/close.png" alt="">
+            <img class="close-popup" src="{{ url_for('static',path='img/close.png') }}" alt="">
             <form action="">
                 <input type="text" placeholder="Введите номер телефона">
                 <input type="tel" placeholder="Введите имя">
@@ -72,13 +72,7 @@
                     <img src="${product_obj.productImage}" alt="" class="cart__content-img">
                     <a href="" class="cart__content-title">${product_obj.productTitle}</a>
                     <div class="quantity">
-                        <button class="plus-btn" type="button" name="button">
-                             <span style="color: #808080;">+</span>
-                        </button>
                         <input type="text" name="name" value="1">
-                        <button class="minus-btn" type="button" name="button">
-                            <span style="color: #808080;">-</span>
-                        </button>
                     </div>
                     <span class="cart__content-price">${product_obj.productPrice}</span>
                 </div>
@@ -87,5 +81,6 @@
         prod_list.insertAdjacentHTML('afterbegin',product_html)
     }
     document.getElementById('price').innerText = total
+    document.getElementById('price_total').innerText = total
 </script>
 {% endblock content %}

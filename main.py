@@ -20,14 +20,14 @@ from redis import asyncio as aioredis
 import json
 from fastapi.encoders import jsonable_encoder
 from pydantic.json import pydantic_encoder
-
+from config import REDIS_HOST
 # from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
 from eshop.routers.search_router import search_router
 
 async def lifespan(app):
     global redis
-    redis = await aioredis.from_url('redis://localhost')
+    redis = await aioredis.from_url(f'{REDIS_HOST}')
     yield
     await redis.close()
 

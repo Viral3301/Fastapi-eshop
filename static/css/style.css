@@ -782,6 +782,16 @@ body{
     cursor: pointer;
 }
 
+.pagination-list_a_catalog{
+    display: block;
+    padding: 9px 15px;
+    background: none;
+    border: none;
+    color: #1C62CD;
+    font-weight: 700;
+    cursor: pointer;
+}
+
 .aside-filter__tabs{
     display: flex;
     justify-content: space-between;
