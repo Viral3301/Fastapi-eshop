@@ -27,7 +27,7 @@ from eshop.routers.search_router import search_router
 
 async def lifespan(app):
     global redis
-    redis = await aioredis.from_url(f'{REDIS_HOST}')
+    redis = await aioredis.from_url(f'redis://{REDIS_HOST}')
     yield
     await redis.close()
 

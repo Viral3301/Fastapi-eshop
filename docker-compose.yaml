@@ -16,6 +16,17 @@ services:
     volumes:
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
 
+  redis:
+      image: redis
+      container_name: redis
+      restart: unless-stopped
+      volumes:
+          - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      expose:
+          - 6379
+      command: redis-server /usr/local/etc/redis/redis.conf
+      networks:
+      - backend
   app:
     build: 
       context: .
@@ -28,7 +39,7 @@ services:
       - backend
     depends_on:
       - "db"
-
+      - "redis"
 networks:
   backend:
      driver: bridge
