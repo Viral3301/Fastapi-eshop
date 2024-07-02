@@ -1,7 +1,7 @@
 $(function(){
     $('.banner-section__slider').slick({dots:false,
-        prevArrow:'<button class="banner-section__slider-btn banner-section__slider-btnprev"><img src="http://127.0.0.1:8000/static/img/arrow-left.svg" alt=""></button>',
-        nextArrow:'<button class="banner-section__slider-btn banner-section__slider-btnnext"><img src="http://127.0.0.1:8000/static/img/arrow-right.svg" alt=""></button>'
+        prevArrow:'<button class="banner-section__slider-btn banner-section__slider-btnprev"><img src="http://localhost:8000/static/img/arrow-left.svg" alt=""></button>',
+        nextArrow:'<button class="banner-section__slider-btn banner-section__slider-btnnext"><img src="http://localhost:8000/static/img/arrow-right.svg" alt=""></button>'
     })
     
     $('.tab').on('click',function(e){
@@ -21,8 +21,8 @@ $(function(){
     $('.product-slider').slick({
         slidesToShow: 4,
         slidesToScroll: 1,
-        prevArrow:'<button class="product-slider__slider-btn product-slider__slider-btnprev"><img src="http://sinenkiy-fastapi-eshop.onrender.com/static/img/arrow-black-left.svg" alt=""></button>',
-        nextArrow:'<button class="product-slider__slider-btn product-slider__slider-btnnext"><img src="http://sinenkiy-fastapi-eshop.onrender.com/static/img/arrow-black-right.svg" alt=""></button>'
+        prevArrow:'<button class="product-slider__slider-btn product-slider__slider-btnprev"><img src="http://localhost:8000/static/img/arrow-black-left.svg" alt=""></button>',
+        nextArrow:'<button class="product-slider__slider-btn product-slider__slider-btnnext"><img src="http://localhost:8000/static/img/arrow-black-right.svg" alt=""></button>'
     });
 
     $('.filter-style').styler();
@@ -115,7 +115,7 @@ $('.pagination-list_a').on('click', function(e){
 })
 
 $('.save-btn').on('click', function(e){
-    window.location.href('http://sinenkiy-fastapi-eshop.onrender.com/')
+    window.location.href('http://localhost:8000/')
 })
 
 $('.open-popup').click(function(e) {

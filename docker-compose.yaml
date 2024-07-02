@@ -34,7 +34,7 @@ services:
     env_file:
       - .env-prod
     ports:
-      - 9999:8000
+      - 8000:8000
     networks:
       - backend
     depends_on:
