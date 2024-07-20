@@ -129,6 +129,12 @@ $('.close-popup').click(function() {
     $('html').removeClass('no-scroll');
 });
 
+$('.pagination-list_a_catalog').click(function(e){
+    let url = new URL(window.location.href)
+    let btn_id = $(this).attr('id')
+    url.searchParams.set('page_num',btn_id)
+    window.location.href = url
+})
 
 
 });

@@ -7,6 +7,7 @@ from database import get_async_session,AsyncSession,User,engine
 from eshop.models import *
 from eshop.exceptions import Unauthorized_redirect, not_found_error
 import shutil
+import math
 from eshop.routers.create_router import pagination
 from sqlalchemy import select,update
 from fastapi_users import fastapi_users,FastAPIUsers
@@ -100,11 +101,11 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 @app.get("/category/{category_id}/",tags=['nav'])
 async def get_category(request: Request, category_id: int,page: int = 1,session: AsyncSession = Depends(get_async_session)):
     
-
+    
     
     content_raw = await session.execute(select(Products).where(Products.category == category_id))
     data = content_raw.scalars().all()
-
+    
     start,end,page,pages_total = pagination(data,page)
 
     raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
