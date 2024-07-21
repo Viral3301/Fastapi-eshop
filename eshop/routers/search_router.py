@@ -14,6 +14,7 @@ templates = Jinja2Templates(directory="templates")
 
 @search_router.get("/search_by_name/")
 async def search_by_name(request: Request, name: str,page_num: int = 1, session: AsyncSession = Depends(get_async_session)):
+
     query = select(Products).where(Products.title.like(f'{name.capitalize()}%'))
 
     content_raw = await session.execute(query)

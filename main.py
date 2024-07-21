@@ -87,13 +87,11 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
     cache = await redis.get('accessories')
     
     if cache is not None:
-        print('cache')
         return templates.TemplateResponse('home.html',{'request':request,'accessories': json.loads(cache)})
     else:
         Accessories = await session.execute(select(Products).where(Products.category.in_([1,2])).order_by(Products.id))
-        Accessories_scalars = Accessories.scalars().all()
-        resultDTO = [ProductDTO.model_validate(row, from_attributes=True) for row in Accessories_scalars]
-        print('not_cache')
+
+        resultDTO = [ProductDTO.model_validate(row, from_attributes=True) for row in Accessories.scalars().all()]
         await redis.set('accessories',json.dumps(resultDTO,default=pydantic_encoder),ex=120)
         return templates.TemplateResponse('home.html',{'request':request,'accessories': resultDTO})
 
@@ -101,17 +99,18 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 @app.get("/category/{category_id}/",tags=['nav'])
 async def get_category(request: Request, category_id: int,page: int = 1,session: AsyncSession = Depends(get_async_session)):
     
+    cache = await redis.get(f'category_length-{category_id}')
     
-    
-    content_raw = await session.execute(select(Products).where(Products.category == category_id))
-    data = content_raw.scalars().all()
-    
-    start,end,page,pages_total = pagination(data,page)
+    if cache is not None:
+        content_raw = await session.execute(select(Products).where(Products.category == category_id).limit(12).offset((page-1)*12))
+        return templates.TemplateResponse('catalog.html',{'request':request,'data': content_raw.scalars().all(),'pages_total':int(cache)+1,"category_id":category_id,"page_num": page,})
+    else:
+        content_raw = await session.execute(select(Products).where(Products.category == category_id))
+        data = content_raw.scalars().all()
+        start,end,page,pages_total = pagination(data,page)
+        await redis.set(f'category_length-{category_id}',pages_total,ex=120)
 
-    raw_category_name = await session.execute(select(Category).where(Category.id == category_id))
-    category_name = raw_category_name.scalars().all()
-
-    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,"category_name":category_name},)
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,})
 
 
 @app.get("/product/{category_id}/{product_id}" ,tags=['nav'])

@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi import FastAPI,Request
 
+import math
+
 from eshop.models import Products, Category ,ProductAttributes, AttributeValue
 from eshop.schemas import Create_product
 from database import get_async_session
@@ -57,11 +59,7 @@ async def Create_attribute_value(request: Request,product_id: int,attribute_id: 
 
 
 def pagination(data,page):
-    data_length = len(data)
-    if data_length % 12 == 0:
-        pages_total = data_length // 12
-    else:
-        pages_total = data_length // 12 + 1 
+    pages_total = math.ceil(len(data)/12)
     start = (page - 1) * 12
     end = start + 12
     return start,end,page,pages_total
