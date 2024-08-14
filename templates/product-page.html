@@ -7,7 +7,7 @@
         <div class="container">
             <div class="product-card__inner">
                 <div class="product-card__img-box product-item--sale">
-                    <img src="{{ url_for('content_img',path='/'+ product['image'][0]) }}" alt="" class="product-card__img">
+                    <img src="{{s3_url}}{{item.image}}" alt="" class="product-card__img">
                     <p class="product-card__price-new">{{ product['price'][0] }}₽</p>
                     <a href="" class="product-card__link">Нашли дешевле? Снизим цену!</a>
                 </div>

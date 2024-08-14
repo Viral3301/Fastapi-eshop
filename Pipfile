@@ -23,6 +23,8 @@ pandas = "*"
 fastapi-cache2 = {extras = ["redis"], version = "*"}
 redis = ">=4.2.0rc1"
 sqlalchemy-serializer = "*"
+matplotlib = "*"
+aiobotocore = "*"
 
 [dev-packages]
 

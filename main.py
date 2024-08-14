@@ -21,14 +21,17 @@ from redis import asyncio as aioredis
 import json
 from fastapi.encoders import jsonable_encoder
 from pydantic.json import pydantic_encoder
-from config import REDIS_HOST
+from config import REDIS_HOST, S3_URL
 # from admin_models import AccesoryAdmin,VehicleAdmin,CategoryAdmin
 from eshop.routers.create_router import create_router
 from eshop.routers.search_router import search_router
+import matplotlib.pyplot as plt
+
+
 
 async def lifespan(app):
     global redis
-    redis = await aioredis.from_url(f'redis://{REDIS_HOST}')
+    redis = await aioredis.from_url(f'redis://localhost')
     yield
     await redis.close()
 
@@ -48,7 +51,6 @@ admin.add_view(ValuesAdmin)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/content_img", StaticFiles(directory='content_img'),name='content_img')
 
 templates = Jinja2Templates(directory="templates")
 
@@ -83,7 +85,6 @@ async def favicon():
 
 @app.get("/",tags=['nav'])
 async def home(request: Request,session: AsyncSession = Depends(get_async_session)):
-    
     cache = await redis.get('accessories')
     
     if cache is not None:
@@ -93,7 +94,7 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
 
         resultDTO = [ProductDTO.model_validate(row, from_attributes=True) for row in Accessories.scalars().all()]
         await redis.set('accessories',json.dumps(resultDTO,default=pydantic_encoder),ex=120)
-        return templates.TemplateResponse('home.html',{'request':request,'accessories': resultDTO})
+        return templates.TemplateResponse('home.html',{'request':request,'s3_url': S3_URL,'accessories': resultDTO})
 
 
 @app.get("/category/{category_id}/",tags=['nav'])
@@ -110,7 +111,7 @@ async def get_category(request: Request, category_id: int,page: int = 1,session:
         start,end,page,pages_total = pagination(data,page)
         await redis.set(f'category_length-{category_id}',pages_total,ex=120)
 
-    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'pages_total':pages_total+1,"category_id":category_id,"page_num": page,})
+    return templates.TemplateResponse('catalog.html',{'request':request,'data': data[start:end],'s3_url': S3_URL,'pages_total':pages_total+1,"category_id":category_id,"page_num": page,})
 
 
 @app.get("/product/{category_id}/{product_id}" ,tags=['nav'])
@@ -124,7 +125,7 @@ async def product_detail(request: Request,category_id : int,product_id: int,sess
     if df.empty:
         raise HTTPException(status_code=404)
 
-    return templates.TemplateResponse('product-page.html',{'request':request,'product':df.to_dict()})
+    return templates.TemplateResponse('product-page.html',{'request':request,'s3_url': S3_URL,'product':df.to_dict()})
 
 @app.get("/login",tags=['nav'])
 async def login(request: Request,session: AsyncSession = Depends(get_async_session)):
@@ -142,6 +143,7 @@ def protected_route(request: Request,session: AsyncSession = Depends(get_async_s
 @app.get('/cart',tags=['nav'])
 async def shopping_cart(request: Request,session: AsyncSession = Depends(get_async_session)):
     return templates.TemplateResponse('cart.html',{"request":request})
+
 
 @app.post("/changepfp",tags=['nav'])
 async def ChangePfp(request: Request,image: UploadFile = File(...),user: User = Depends(current_user),session: AsyncSession = Depends(get_async_session)):

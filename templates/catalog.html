@@ -32,7 +32,7 @@
                             {% if item.sale == true %}
                                 <a class="product-item product-item--sale" href="/product/{{item.category}}/{{item.id}}">
                                     <p class="product-item__hover-text">Посмотреть товар</p>
-                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <img src="{{s3_url}}{{item.image}}" alt="" class="product-item__img">
                                     <h4 class="products-item__title">{{ item.title }}</h4>
                                     <p class="price product-item__price">{{ item.price }}₽</p>
                                     <p class="product-item__notify">Нет в наличии</p>
@@ -40,7 +40,7 @@
                             {% else %}
                                 <a class="product-item product-item" href="/product/{{item.category}}/{{item.id}}">
                                     <p class="product-item__hover-text">Посмотреть товар</p>
-                                    <img src="{{ url_for('content_img', path='/' + item.image) }}" alt="" class="product-item__img">
+                                    <img src="{{s3_url}}{{item.image}}" alt="" class="product-item__img">
                                     <h4 class="products-item__title">{{ item.title }}</h4>
                                     <p class="price product-item__price">{{ item.price }}₽  </p>
                                     <p class="product-item__notify">Нет в наличии</p>
