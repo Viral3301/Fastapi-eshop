@@ -88,7 +88,7 @@ async def home(request: Request,session: AsyncSession = Depends(get_async_sessio
     cache = await redis.get('accessories')
     
     if cache is not None:
-        return templates.TemplateResponse('home.html',{'request':request,'accessories': json.loads(cache)})
+        return templates.TemplateResponse('home.html',{'request':request,'s3_url': S3_URL,'accessories': json.loads(cache)})
     else:
         Accessories = await session.execute(select(Products).where(Products.category.in_([1,2])).order_by(Products.id))
 

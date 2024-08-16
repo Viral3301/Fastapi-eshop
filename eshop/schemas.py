@@ -47,7 +47,7 @@ class UserCreate(schemas.BaseUserCreate):
     ):
         return cls(username=username,email=email,password=password,is_active=is_active,is_superuser=is_superuser,is_verified=is_verified)
     
-class Create_product(BaseModel):
+class Create_product_schema(BaseModel):
     title : str
     category: int
     product_code: int

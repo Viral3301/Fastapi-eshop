@@ -1,22 +1,33 @@
 import shutil
 from typing import Annotated
+from uuid import uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi import FastAPI,Request
-
+import magic
 import math
 
 from eshop.models import Products, Category ,ProductAttributes, AttributeValue
-from eshop.schemas import Create_product
+from eshop.s3_storage import s3_upload
+from eshop.schemas import Create_product_schema
 from database import get_async_session
 
 create_router = APIRouter(prefix='/create',tags=["create"])
 
+SUPPORTED_FILE_TYPES = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg'
+}
+
+
 @create_router.post("/product")
-async def Create_product(request: Request,product: Create_product = Depends(Create_product.as_form),image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
-    with open (f'content_img/{image.filename}',"wb") as buffer:
-        shutil.copyfileobj(image.file,buffer)
-    new_product = Products(title=product.title,image=image.filename,price=product.price,category=product.category,product_code=product.product_code,sale=product.sale)
+async def Create_product(request: Request,product: Create_product_schema = Depends(Create_product_schema.as_form),image: UploadFile = File(...),session: AsyncSession = Depends(get_async_session)):
+    contents = await image.read()
+    file_type = magic.from_buffer(buffer=contents, mime=True)
+    file_name = f'/{uuid4()}.{SUPPORTED_FILE_TYPES[file_type]}'
+    await s3_upload(contents=contents, key=file_name)
+
+    new_product = Products(title=product.title,image=file_name,price=product.price,category=product.category,product_code=product.product_code,sale=product.sale)
     session.add(new_product)
     await session.commit()
     return {'response': "good"}
